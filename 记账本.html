@@ -209,7 +209,7 @@
         </label>
         <label>消费分类
           <span class="catFilter">
-            <select id="fl_consCat"><option value="">全部</option><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option></select>
+            <select id="fl_consCat"><option value="">全部</option><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option><option value="生活支出">生活支出</option><option value="XM报销">XM报销</option></select>
             <button type="button" id="fl_consCatAdd" class="btn ghost sm" title="新建消费分类">＋</button>
             <button type="button" id="fl_consCatManage" class="btn ghost sm" title="管理消费分类">管理</button>
           </span>
@@ -222,7 +222,22 @@
         </label>
         <button class="btn ghost sm" id="fl_clear">重置筛选</button>
       </div>
-      <div id="consCatManage" class="consCatManage" hidden=""></div>
+      <div id="consCatManage" class="consCatManage" hidden="">
+    <div class="ccRow"><span class="ccName">XM停车费</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="0">改名</button><button class="btn danger sm" data-d="0">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">XM消费</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="1">改名</button><button class="btn danger sm" data-d="1">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">个人零用</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="2">改名</button><button class="btn danger sm" data-d="2">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">不统计</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="3">改名</button><button class="btn danger sm" data-d="3">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">生活支出</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="4">改名</button><button class="btn danger sm" data-d="4">删除</button></span>
+    </div></div>
       <div id="listWrap">
     <div class="muted" style="margin-bottom:10px">共 <b>153</b> 条 · 收入 <b style="color:var(--income)">¥3,768.77</b> · 支出 <b style="color:var(--expense)">¥25,166.12</b> · 合计（支出−收入） <b style="color:var(--income)">¥21,397.35</b></div>
     <table>
@@ -237,7 +252,7 @@
             <td class="amt expense">-25.00</td>
             <td>—</td>
             <td>扫码付款</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpg4xy8" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpg4xy8" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpg4xy8">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpg4xy8">删</button>
@@ -251,7 +266,7 @@
             <td class="amt expense">-25.91</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp7n4t8" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp7n4t8" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp7n4t8">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp7n4t8">删</button>
@@ -265,7 +280,7 @@
             <td class="amt expense">-14.69</td>
             <td>—</td>
             <td>购物/便利店</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp09xzz" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp09xzz" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp09xzz">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp09xzz">删</button>
@@ -279,7 +294,7 @@
             <td class="amt expense">-200.00</td>
             <td>—</td>
             <td>转账转出</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpslg1r" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpslg1r" value="不统计" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpslg1r">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpslg1r">删</button>
@@ -293,7 +308,7 @@
             <td class="amt expense">-20.70</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpyox4t" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpyox4t" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpyox4t">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpyox4t">删</button>
@@ -307,7 +322,7 @@
             <td class="amt expense">-9.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp2m24b" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp2m24b" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp2m24b">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp2m24b">删</button>
@@ -321,7 +336,7 @@
             <td class="amt expense">-770.00</td>
             <td>—</td>
             <td>转账转出</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpqxmn0" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpqxmn0" value="生活支出" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpqxmn0">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpqxmn0">删</button>
@@ -335,7 +350,7 @@
             <td class="amt expense">-50.00</td>
             <td>—</td>
             <td>其他</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclprjpop" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclprjpop" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclprjpop">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclprjpop">删</button>
@@ -349,7 +364,7 @@
             <td class="amt expense">-14.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp63x84" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp63x84" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp63x84">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp63x84">删</button>
@@ -363,7 +378,7 @@
             <td class="amt expense">-26.00</td>
             <td>—</td>
             <td>购物/便利店</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp174nf" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp174nf" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp174nf">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp174nf">删</button>
@@ -377,7 +392,7 @@
             <td class="amt expense">-369.88</td>
             <td>—</td>
             <td>旅行/票务</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp330nb" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp330nb" value="XM报销" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp330nb">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp330nb">删</button>
@@ -391,7 +406,7 @@
             <td class="amt expense">-10.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpjpbzy" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpjpbzy" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpjpbzy">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpjpbzy">删</button>
@@ -405,7 +420,7 @@
             <td class="amt expense">-7.80</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpgbnos" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpgbnos" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpgbnos">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpgbnos">删</button>
@@ -419,7 +434,7 @@
             <td class="amt income">+520.00</td>
             <td>—</td>
             <td>转账转入</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclppb3qu" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclppb3qu" value="生活支出" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclppb3qu">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclppb3qu">删</button>
@@ -433,7 +448,7 @@
             <td class="amt expense">-10.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpnche1" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpnche1" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpnche1">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpnche1">删</button>
@@ -447,7 +462,7 @@
             <td class="amt expense">-18.98</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp97gws" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp97gws" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp97gws">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp97gws">删</button>
@@ -461,7 +476,7 @@
             <td class="amt expense">-18.00</td>
             <td>—</td>
             <td>其他</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1limu" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1limu" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp1limu">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp1limu">删</button>
@@ -475,7 +490,7 @@
             <td class="amt expense">-12.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpzuui7" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpzuui7" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpzuui7">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpzuui7">删</button>
@@ -489,7 +504,7 @@
             <td class="amt expense">-20.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpytvwu" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpytvwu" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpytvwu">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpytvwu">删</button>
@@ -503,7 +518,7 @@
             <td class="amt income">+2.70</td>
             <td>—</td>
             <td>红包</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpisj7m" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpisj7m" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpisj7m">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpisj7m">删</button>
@@ -517,7 +532,7 @@
             <td class="amt income">+27.00</td>
             <td>—</td>
             <td>退款</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpco92q" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpco92q" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpco92q">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpco92q">删</button>
@@ -531,7 +546,7 @@
             <td class="amt expense">-27.00</td>
             <td>已全额退款</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpioksl" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpioksl" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpioksl">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpioksl">删</button>
@@ -545,7 +560,7 @@
             <td class="amt expense">-9.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpvwq96" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpvwq96" value="XM消费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpvwq96">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpvwq96">删</button>
@@ -559,7 +574,7 @@
             <td class="amt expense">-100.00</td>
             <td>—</td>
             <td>转账转出</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpru6ug" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpru6ug" value="不统计" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpru6ug">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpru6ug">删</button>
@@ -573,7 +588,7 @@
             <td class="amt expense">-23.40</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclplqno6" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclplqno6" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclplqno6">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclplqno6">删</button>
@@ -587,7 +602,7 @@
             <td class="amt expense">-10.70</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1zc85" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1zc85" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp1zc85">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp1zc85">删</button>
@@ -601,7 +616,7 @@
             <td class="amt expense">-31.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpdyup0" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpdyup0" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpdyup0">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpdyup0">删</button>
@@ -615,7 +630,7 @@
             <td class="amt expense">-15.70</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpknsnf" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpknsnf" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpknsnf">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpknsnf">删</button>
@@ -629,7 +644,7 @@
             <td class="amt expense">-9.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpo2ptk" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpo2ptk" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpo2ptk">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpo2ptk">删</button>
@@ -643,7 +658,7 @@
             <td class="amt expense">-10.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpfdeq7" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpfdeq7" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpfdeq7">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpfdeq7">删</button>
@@ -657,7 +672,7 @@
             <td class="amt expense">-15.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpjwa1v" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpjwa1v" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpjwa1v">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpjwa1v">删</button>
@@ -671,7 +686,7 @@
             <td class="amt income">+9.90</td>
             <td>—</td>
             <td>退款</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp5m8mr" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp5m8mr" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp5m8mr">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp5m8mr">删</button>
@@ -685,7 +700,7 @@
             <td class="amt expense">-15.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp11whq" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp11whq" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp11whq">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp11whq">删</button>
@@ -699,7 +714,7 @@
             <td class="amt expense">-32.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1ztz8" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp1ztz8" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp1ztz8">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp1ztz8">删</button>
@@ -713,7 +728,7 @@
             <td class="amt expense">-69.00</td>
             <td>—</td>
             <td>转账转出</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpp65oi" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpp65oi" value="生活支出" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpp65oi">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpp65oi">删</button>
@@ -727,7 +742,7 @@
             <td class="amt expense">-24.68</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpry3sq" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpry3sq" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpry3sq">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpry3sq">删</button>
@@ -741,7 +756,7 @@
             <td class="amt expense">-17.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp85bb7" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp85bb7" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp85bb7">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp85bb7">删</button>
@@ -755,7 +770,7 @@
             <td class="amt expense">-9.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp6ch7q" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp6ch7q" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp6ch7q">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp6ch7q">删</button>
@@ -769,7 +784,7 @@
             <td class="amt income">+0.41</td>
             <td>—</td>
             <td>红包</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp30g14" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp30g14" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp30g14">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp30g14">删</button>
@@ -783,7 +798,7 @@
             <td class="amt expense">-600.00</td>
             <td>—</td>
             <td>提现</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp8pn4n" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp8pn4n" value="不统计" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp8pn4n">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp8pn4n">删</button>
@@ -797,7 +812,7 @@
             <td class="amt income">+600.00</td>
             <td>—</td>
             <td>转账转入</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpkuc64" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpkuc64" value="不统计" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpkuc64">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpkuc64">删</button>
@@ -811,7 +826,7 @@
             <td class="amt expense">-28.00</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpnsya1" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpnsya1" value="个人零用" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpnsya1">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpnsya1">删</button>
@@ -825,7 +840,7 @@
             <td class="amt expense">-34.01</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpqxn2g" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpqxn2g" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpqxn2g">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpqxn2g">删</button>
@@ -839,7 +854,7 @@
             <td class="amt expense">-6.00</td>
             <td>—</td>
             <td>交通停车</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp4jpe4" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclp4jpe4" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclp4jpe4">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclp4jpe4">删</button>
@@ -853,7 +868,7 @@
             <td class="amt expense">-9.90</td>
             <td>—</td>
             <td>餐饮</td>
-            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpk4o43" value="" placeholder="—"></td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4jvclpk4o43" value="XM停车费" placeholder="—"></td>
             <td style="text-align:right;white-space:nowrap">
               <button class="btn ghost sm" data-edit="mt4jvclpk4o43">编辑</button>
               <button class="btn danger sm" data-del="mt4jvclpk4o43">删</button>
@@ -2373,7 +2388,7 @@
           </tr>
       </tbody>
     </table>
-    <datalist id="consCatLive"><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option></datalist></div>
+    <datalist id="consCatLive"><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option><option value="生活支出">生活支出</option><option value="XM报销">XM报销</option></datalist></div>
     </div>
   </section>
 
@@ -2517,7 +2532,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast">导入成功 153 条</div>
+<div class="toast" id="toast">已新建消费分类：XM报销</div>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script>
@@ -3394,7 +3409,7 @@ updateSyncStatus('idle','已配置');
 })();
 renderList();
 </script>
-<script id="jbData">var jbData = {"transactions":[{"id":"mt4jvclpg4xy8","date":"2026-08-19","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给罗**","consumptionCat":"","note":"","time":"19:36"},{"id":"mt4jvclp7n4t8","date":"2026-08-19","type":"expense","category":"餐饮","amount":25.91,"counterparty":"美团","consumptionCat":"","note":"","time":"19:52"},{"id":"mt4jvclp09xzz","date":"2026-08-19","type":"expense","category":"购物/便利店","amount":14.69,"counterparty":"新佳宜","consumptionCat":"","note":"","time":"18:07"},{"id":"mt4jvclpslg1r","date":"2026-08-19","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"15:55"},{"id":"mt4jvclpyox4t","date":"2026-08-19","type":"expense","category":"餐饮","amount":20.7,"counterparty":"遇见小面","consumptionCat":"","note":"","time":"12:57"},{"id":"mt4jvclp2m24b","date":"2026-08-19","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"12:02"},{"id":"mt4jvclpqxmn0","date":"2026-08-19","type":"expense","category":"转账转出","amount":770,"counterparty":"转账-转给海燕","consumptionCat":"","note":"","time":"10:35"},{"id":"mt4jvclprjpop","date":"2026-08-19","type":"expense","category":"其他","amount":50,"counterparty":"广州市西城物业发展有限公司","consumptionCat":"","note":"","time":"10:04"},{"id":"mt4jvclp63x84","date":"2026-08-19","type":"expense","category":"餐饮","amount":14,"counterparty":"陈记石磨肠粉","consumptionCat":"","note":"","time":"09:01"},{"id":"mt4jvclp174nf","date":"2026-08-19","type":"expense","category":"购物/便利店","amount":26,"counterparty":"省士多","consumptionCat":"","note":"","time":"08:57"},{"id":"mt4jvclp330nb","date":"2026-08-18","type":"expense","category":"旅行/票务","amount":369.88,"counterparty":"高德云信科技","consumptionCat":"","note":"","time":"16:24"},{"id":"mt4jvclpjpbzy","date":"2026-08-18","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"","note":"","time":"16:17"},{"id":"mt4jvclpgbnos","date":"2026-08-18","type":"expense","category":"餐饮","amount":7.8,"counterparty":"美团","consumptionCat":"","note":"","time":"16:02"},{"id":"mt4jvclppb3qu","date":"2026-08-18","type":"income","category":"转账转入","amount":520,"counterparty":"转账-来自海燕","consumptionCat":"","note":"","time":"11:07"},{"id":"mt4jvclpnche1","date":"2026-08-18","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"","note":"","time":"10:55"},{"id":"mt4jvclp97gws","date":"2026-08-18","type":"expense","category":"交通停车","amount":18.98,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"09:25"},{"id":"mt4jvclp1limu","date":"2026-08-17","type":"expense","category":"其他","amount":18,"counterparty":"中燃***","consumptionCat":"","note":"","time":"22:22"},{"id":"mt4jvclpzuui7","date":"2026-08-17","type":"expense","category":"交通停车","amount":12,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"20:20"},{"id":"mt4jvclpytvwu","date":"2026-08-17","type":"expense","category":"餐饮","amount":20,"counterparty":"扫二维码付款-给明*煲仔","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4jvclpisj7m","date":"2026-08-17","type":"income","category":"红包","amount":2.7,"counterparty":"微信红包-来自沛县-老刘","consumptionCat":"","note":"","time":"17:08"},{"id":"mt4jvclpco92q","date":"2026-08-17","type":"income","category":"退款","amount":27,"counterparty":"美团平台商户-退款","consumptionCat":"","note":"","time":"17:12"},{"id":"mt4jvclpioksl","date":"2026-08-17","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"已全额退款","time":"16:11"},{"id":"mt4jvclpvwq96","date":"2026-08-17","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"16:05"},{"id":"mt4jvclpru6ug","date":"2026-08-16","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟","consumptionCat":"","note":"","time":"22:21"},{"id":"mt4jvclplqno6","date":"2026-08-16","type":"expense","category":"餐饮","amount":23.4,"counterparty":"美团","consumptionCat":"","note":"","time":"20:44"},{"id":"mt4jvclp1zc85","date":"2026-08-16","type":"expense","category":"餐饮","amount":10.7,"counterparty":"美团","consumptionCat":"","note":"","time":"19:39"},{"id":"mt4jvclpdyup0","date":"2026-08-16","type":"expense","category":"餐饮","amount":31.9,"counterparty":"美团","consumptionCat":"","note":"","time":"18:35"},{"id":"mt4jvclpknsnf","date":"2026-08-16","type":"expense","category":"餐饮","amount":15.7,"counterparty":"美团","consumptionCat":"","note":"","time":"18:31"},{"id":"mt4jvclpo2ptk","date":"2026-08-16","type":"expense","category":"餐饮","amount":9.9,"counterparty":"美团","consumptionCat":"","note":"","time":"18:14"},{"id":"mt4jvclpfdeq7","date":"2026-08-16","type":"expense","category":"交通停车","amount":10,"counterparty":"PP停车","consumptionCat":"","note":"","time":"15:16"},{"id":"mt4jvclpjwa1v","date":"2026-08-16","type":"expense","category":"交通停车","amount":15,"counterparty":"深圳中心停车场","consumptionCat":"","note":"","time":"14:26"},{"id":"mt4jvclp5m8mr","date":"2026-08-16","type":"income","category":"退款","amount":9.9,"counterparty":"德克士-退款","consumptionCat":"","note":"","time":"14:22"},{"id":"mt4jvclp11whq","date":"2026-08-16","type":"expense","category":"餐饮","amount":15,"counterparty":"老碗会陕西手工面","consumptionCat":"","note":"","time":"13:48"},{"id":"mt4jvclp1ztz8","date":"2026-08-16","type":"expense","category":"餐饮","amount":32,"counterparty":"老碗会陕西手工面","consumptionCat":"","note":"","time":"13:03"},{"id":"mt4jvclpp65oi","date":"2026-08-15","type":"expense","category":"转账转出","amount":69,"counterparty":"转账-转给海燕","consumptionCat":"","note":"","time":"23:30"},{"id":"mt4jvclpry3sq","date":"2026-08-15","type":"expense","category":"交通停车","amount":24.68,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"22:51"},{"id":"mt4jvclp85bb7","date":"2026-08-15","type":"expense","category":"餐饮","amount":17,"counterparty":"深圳市八合里餐饮管理有限公司","consumptionCat":"","note":"","time":"20:51"},{"id":"mt4jvclp6ch7q","date":"2026-08-15","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"19:10"},{"id":"mt4jvclp30g14","date":"2026-08-15","type":"income","category":"红包","amount":0.41,"counterparty":"微信红包-来自王**","consumptionCat":"","note":"","time":"19:19"},{"id":"mt4jvclp8pn4n","date":"2026-08-15","type":"expense","category":"提现","amount":600,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4jvclpkuc64","date":"2026-08-15","type":"income","category":"转账转入","amount":600,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4jvclpnsya1","date":"2026-08-15","type":"expense","category":"餐饮","amount":28,"counterparty":"惠州市大鹏餐饮管理有限公司","consumptionCat":"","note":"","time":"12:06"},{"id":"mt4jvclpqxn2g","date":"2026-08-15","type":"expense","category":"交通停车","amount":34.01,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"11:33"},{"id":"mt4jvclp4jpe4","date":"2026-08-15","type":"expense","category":"交通停车","amount":6,"counterparty":"深圳微诚达正大城车场","consumptionCat":"","note":"","time":"11:05"},{"id":"mt4jvclpk4o43","date":"2026-08-15","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"10:52"},{"id":"mt4jvclpc5k5s","date":"2026-08-15","type":"expense","category":"餐饮","amount":91,"counterparty":"大米先生","consumptionCat":"","note":"","time":"10:08"},{"id":"mt4jvclpjd74r","date":"2026-08-15","type":"income","category":"退款","amount":0.49,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:38"},{"id":"mt4jvclp96nrg","date":"2026-08-15","type":"expense","category":"交通停车","amount":20,"counterparty":"星星充电","consumptionCat":"","note":"已退款0.49","time":"17:29"},{"id":"mt4jvclpggym3","date":"2026-08-15","type":"income","category":"退款","amount":20,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4jvclpz9gpz","date":"2026-08-15","type":"expense","category":"转账转出","amount":400,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"13:25"},{"id":"mt4jvclpzyysr","date":"2026-08-15","type":"expense","category":"交通停车","amount":5,"counterparty":"PP停车","consumptionCat":"","note":"","time":"12:19"},{"id":"mt4jvclptnb83","date":"2026-08-15","type":"expense","category":"餐饮","amount":10,"counterparty":"德保餐厅","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4jvclplbbny","date":"2026-08-15","type":"expense","category":"汽车服务","amount":19.9,"counterparty":"途虎养车","consumptionCat":"","note":"","time":"10:20"},{"id":"mt4jvclpnf2px","date":"2026-08-14","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"22:31"},{"id":"mt4jvclpq5ipy","date":"2026-08-14","type":"income","category":"红包","amount":0.5,"counterparty":"微信红包-来自袁**小罗","consumptionCat":"","note":"","time":"21:08"},{"id":"mt4jvclps2m1l","date":"2026-08-14","type":"expense","category":"物流快递","amount":18,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4jvclpfxyte","date":"2026-08-14","type":"expense","category":"物流快递","amount":13,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4jvclp22pax","date":"2026-08-14","type":"expense","category":"餐饮","amount":48.63,"counterparty":"珠海市众家好食点餐饮管理有限公司","consumptionCat":"","note":"","time":"12:34"},{"id":"mt4jvclpkgxer","date":"2026-08-14","type":"income","category":"红包","amount":10.46,"counterparty":"微信红包-来自袁**小海","consumptionCat":"","note":"","time":"12:30"},{"id":"mt4jvclp02m95","date":"2026-08-14","type":"expense","category":"提现","amount":1290,"counterparty":"零钱提现-到招商银行(30**)","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4jvclpgy6w4","date":"2026-08-14","type":"income","category":"转账转入","amount":1290,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4jvclpvfygc","date":"2026-08-12","type":"expense","category":"餐饮","amount":6,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:52"},{"id":"mt4jvclpbskzt","date":"2026-08-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4jvclp4rrdl","date":"2026-08-12","type":"expense","category":"交通停车","amount":15.4,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"08:25"},{"id":"mt4jvclp0an6n","date":"2026-08-12","type":"expense","category":"购物/便利店","amount":6,"counterparty":"深圳市宝安区美惠便利店","consumptionCat":"","note":"","time":"07:21"},{"id":"mt4jvclp50jwy","date":"2026-08-11","type":"expense","category":"交通停车","amount":11,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4jvclpi2ifs","date":"2026-08-11","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4jvclpx0o76","date":"2026-08-11","type":"expense","category":"提现","amount":630.96,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4jvclpndala","date":"2026-08-11","type":"income","category":"转账转入","amount":630,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4jvclpk1ea1","date":"2026-08-11","type":"expense","category":"餐饮","amount":24.16,"counterparty":"美团","consumptionCat":"","note":"","time":"10:59"},{"id":"mt4jvclp15o6j","date":"2026-08-11","type":"expense","category":"购物/便利店","amount":17,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"09:59"},{"id":"mt4jvclp0kc8f","date":"2026-08-11","type":"expense","category":"交通停车","amount":24.64,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"09:43"},{"id":"mt4jvclplyviy","date":"2026-08-10","type":"expense","category":"扫码付款","amount":4.5,"counterparty":"扫二维码付款-给汤**","consumptionCat":"","note":"","time":"20:18"},{"id":"mt4jvclp8dmq1","date":"2026-08-10","type":"expense","category":"扫码付款","amount":22.5,"counterparty":"扫二维码付款-给罗**","consumptionCat":"","note":"","time":"20:16"},{"id":"mt4jvclpoclq5","date":"2026-08-10","type":"expense","category":"交通停车","amount":16,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:45"},{"id":"mt4jvclp38j61","date":"2026-08-10","type":"expense","category":"餐饮","amount":20,"counterparty":"明*煲仔饭","consumptionCat":"","note":"","time":"18:35"},{"id":"mt4jvclpkh780","date":"2026-08-10","type":"expense","category":"租车","amount":987.44,"counterparty":"北京神州汽车租赁有限公司","consumptionCat":"","note":"","time":"11:42"},{"id":"mt4jvclpjmghn","date":"2026-08-10","type":"expense","category":"餐饮","amount":26.3,"counterparty":"美团","consumptionCat":"","note":"","time":"11:23"},{"id":"mt4jvclpxcsam","date":"2026-08-10","type":"expense","category":"购物/便利店","amount":20,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"08:20"},{"id":"mt4jvclptm9zj","date":"2026-08-10","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"07:56"},{"id":"mt4jvclp2p8k6","date":"2026-08-09","type":"expense","category":"餐饮","amount":4,"counterparty":"美团","consumptionCat":"","note":"","time":"21:32"},{"id":"mt4jvclpi286w","date":"2026-08-09","type":"expense","category":"餐饮","amount":22,"counterparty":"川渝印象重庆小面（罗湖店）","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4jvclpbvrzu","date":"2026-08-09","type":"expense","category":"公共交通","amount":8,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"21:09"},{"id":"mt4jvclpgans9","date":"2026-08-09","type":"expense","category":"餐饮","amount":61,"counterparty":"肯德基","consumptionCat":"","note":"","time":"20:15"},{"id":"mt4jvclpo7vkr","date":"2026-08-09","type":"expense","category":"餐饮","amount":24,"counterparty":"兰州***拉面","consumptionCat":"","note":"","time":"19:16"},{"id":"mt4jvclp2jaw0","date":"2026-08-09","type":"expense","category":"扫码付款","amount":17.5,"counterparty":"扫二维码付款-给力强","consumptionCat":"","note":"","time":"08:07"},{"id":"mt4jvclpwjgp1","date":"2026-08-09","type":"expense","category":"购物/超市","amount":25,"counterparty":"西宁市城东区***超市","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4jvclp62gg3","date":"2026-08-09","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4jvclp5r88h","date":"2026-08-09","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4jvclp5q13e","date":"2026-08-09","type":"expense","category":"加油/能源","amount":406,"counterparty":"陆通能源有限责任公司","consumptionCat":"","note":"","time":"06:13"},{"id":"mt4jvclp98gnm","date":"2026-08-08","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"19:05"},{"id":"mt4jvclp0r4wj","date":"2026-08-08","type":"expense","category":"电商购物","amount":58.66,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"10:04"},{"id":"mt4jvclp7kufi","date":"2026-08-08","type":"expense","category":"电商购物","amount":79.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"已全额退款","time":"10:03"},{"id":"mt4jvclp5vmxr","date":"2026-08-08","type":"expense","category":"电商购物","amount":52.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"09:58"},{"id":"mt4jvclp2itgr","date":"2026-08-08","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"09:04"},{"id":"mt4jvclp64h1o","date":"2026-08-08","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:50"},{"id":"mt4jvclpzlk8g","date":"2026-08-08","type":"expense","category":"景区门票","amount":10,"counterparty":"张掖丹霞景区管理股份有限公司","consumptionCat":"","note":"","time":"08:48"},{"id":"mt4jvclpris5v","date":"2026-08-07","type":"expense","category":"扫码付款","amount":5,"counterparty":"扫二维码付款-给仁心**","consumptionCat":"","note":"","time":"20:26"},{"id":"mt4jvclpf088x","date":"2026-08-07","type":"expense","category":"转账转出","amount":2800,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"18:12"},{"id":"mt4jvclps3gmy","date":"2026-08-07","type":"expense","category":"交通停车","amount":6,"counterparty":"玉门服务区","consumptionCat":"","note":"","time":"13:33"},{"id":"mt4jvclplkjrj","date":"2026-08-07","type":"expense","category":"加油/能源","amount":540,"counterparty":"甘肃中油交通油品有限公司","consumptionCat":"","note":"","time":"12:56"},{"id":"mt4jvclpbrnf2","date":"2026-08-07","type":"expense","category":"餐饮","amount":13,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:55"},{"id":"mt4jvclpejfon","date":"2026-08-07","type":"expense","category":"扫码付款","amount":21,"counterparty":"扫二维码付款-给Lih","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4jvclpfb67q","date":"2026-08-07","type":"expense","category":"餐饮","amount":14,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:28"},{"id":"mt4jvclp49ja8","date":"2026-08-07","type":"expense","category":"扫码付款","amount":50,"counterparty":"扫二维码付款-给黑子","consumptionCat":"","note":"","time":"07:58"},{"id":"mt4jvclpp8i3q","date":"2026-08-07","type":"expense","category":"扫码付款","amount":15,"counterparty":"扫二维码付款-给米粒儿","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4jvclpn8ul9","date":"2026-08-07","type":"expense","category":"扫码付款","amount":10,"counterparty":"扫二维码付款-给代**爷爷","consumptionCat":"","note":"","time":"07:19"},{"id":"mt4jvclqxot0d","date":"2026-08-07","type":"expense","category":"餐饮","amount":24,"counterparty":"敦煌市众发餐饮","consumptionCat":"","note":"","time":"06:44"},{"id":"mt4jvclq9eypa","date":"2026-08-07","type":"expense","category":"餐饮","amount":20,"counterparty":"敦煌市***餐饮店","consumptionCat":"","note":"","time":"06:07"},{"id":"mt4jvclqzhzjc","date":"2026-08-06","type":"expense","category":"餐饮","amount":55.7,"counterparty":"美团","consumptionCat":"","note":"","time":"18:45"},{"id":"mt4jvclq07owl","date":"2026-08-06","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"14:48"},{"id":"mt4jvclq9j18y","date":"2026-08-06","type":"income","category":"退款","amount":9.9,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:18"},{"id":"mt4jvclq6jevl","date":"2026-08-06","type":"income","category":"退款","amount":9.92,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:16"},{"id":"mt4jvclqgw3qp","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.92,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:15"},{"id":"mt4jvclq1f7fx","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:02"},{"id":"mt4jvclq2tnpv","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"13:58"},{"id":"mt4jvclqtlly6","date":"2026-08-06","type":"expense","category":"餐饮","amount":16,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"13:24"},{"id":"mt4jvclqxt9qr","date":"2026-08-06","type":"income","category":"红包","amount":2.29,"counterparty":"微信红包-来自大风-周维龙","consumptionCat":"","note":"","time":"12:17"},{"id":"mt4jvclqwhkgc","date":"2026-08-06","type":"expense","category":"扫码付款","amount":18,"counterparty":"扫二维码付款-给好物小铺夏夏","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4jvclqlurcx","date":"2026-08-06","type":"expense","category":"餐饮","amount":20,"counterparty":"牛肉沙葱饼","consumptionCat":"","note":"","time":"11:35"},{"id":"mt4jvclqj8nln","date":"2026-08-06","type":"expense","category":"餐饮","amount":5.79,"counterparty":"蜜雪冰城","consumptionCat":"","note":"","time":"10:32"},{"id":"mt4jvclqdoxg7","date":"2026-08-06","type":"expense","category":"餐饮","amount":8,"counterparty":"揽山","consumptionCat":"","note":"","time":"08:35"},{"id":"mt4jvclqbip7b","date":"2026-08-06","type":"expense","category":"景区门票","amount":240,"counterparty":"黑独山景区","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4jvclq6ldee","date":"2026-08-06","type":"expense","category":"扫码付款","amount":24,"counterparty":"扫二维码付款-给**萍**","consumptionCat":"","note":"","time":"07:39"},{"id":"mt4jvclqh3ygy","date":"2026-08-05","type":"expense","category":"其他","amount":32,"counterparty":"黑风寨便民服务","consumptionCat":"","note":"","time":"18:28"},{"id":"mt4jvclqlf6e7","date":"2026-08-05","type":"expense","category":"交通停车","amount":10,"counterparty":"大柴旦雅丹停车场","consumptionCat":"","note":"","time":"19:27"},{"id":"mt4jvclq6cvip","date":"2026-08-05","type":"expense","category":"加油/能源","amount":422.28,"counterparty":"中国石化销售股份有限公司","consumptionCat":"","note":"","time":"17:12"},{"id":"mt4jvclq3kyv1","date":"2026-08-05","type":"expense","category":"餐饮","amount":22.1,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"16:42"},{"id":"mt4jvclqqvep1","date":"2026-08-04","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"12:37"},{"id":"mt4jvclq1x5c9","date":"2026-08-04","type":"expense","category":"扫码付款","amount":30,"counterparty":"扫二维码付款-给lori李","consumptionCat":"","note":"","time":"11:56"},{"id":"mt4jvclq3si4g","date":"2026-08-04","type":"expense","category":"景区门票","amount":10,"counterparty":"翡翠湖观光塔","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4jvclqz0l9m","date":"2026-08-04","type":"expense","category":"餐饮/其他","amount":18,"counterparty":"青甘***","consumptionCat":"","note":"","time":"10:28"},{"id":"mt4jvclqztllv","date":"2026-08-04","type":"expense","category":"通讯","amount":29.94,"counterparty":"中国电信","consumptionCat":"","note":"","time":"08:30"},{"id":"mt4jvclq6uai9","date":"2026-08-04","type":"expense","category":"餐饮","amount":30,"counterparty":"大柴旦伊香阁美食餐厅","consumptionCat":"","note":"","time":"07:34"},{"id":"mt4jvclq81c3q","date":"2026-08-03","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"22:33"},{"id":"mt4jvclqxmqfq","date":"2026-08-03","type":"income","category":"退款","amount":635.2,"counterparty":"高德云信科技-退款","consumptionCat":"","note":"","time":"22:11"},{"id":"mt4jvclq37i9s","date":"2026-08-03","type":"expense","category":"扫码付款","amount":7,"counterparty":"扫二维码付款-给宁宁","consumptionCat":"","note":"","time":"21:21"},{"id":"mt4jvclqkk95q","date":"2026-08-03","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给小丁烤羊肉","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4jvclqgyq3b","date":"2026-08-03","type":"expense","category":"交通/租车","amount":40,"counterparty":"格尔木**汽车运输服务有限公司","consumptionCat":"","note":"","time":"16:49"},{"id":"mt4jvclq0rjfn","date":"2026-08-03","type":"expense","category":"旅行/票务","amount":794,"counterparty":"高德云信科技","consumptionCat":"","note":"已退款635.20","time":"15:43"},{"id":"mt4jvclqbjrnk","date":"2026-08-03","type":"expense","category":"住宿","amount":39,"counterparty":"清**酒店","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4jvclq4vq2r","date":"2026-08-02","type":"expense","category":"加油/能源","amount":471.15,"counterparty":"乌兰高速北加油站","consumptionCat":"","note":"","time":"20:25"},{"id":"mt4jvclqzmod8","date":"2026-08-02","type":"expense","category":"景区门票","amount":10,"counterparty":"青海湖茶卡盐湖文化旅游发展有限公司","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4jvclqax9jr","date":"2026-08-02","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"17:22"},{"id":"mt4jvclqyuhjd","date":"2026-08-02","type":"expense","category":"转账转出","amount":11300,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"15:46"},{"id":"mt4jvclq9hlfi","date":"2026-08-02","type":"expense","category":"景区门票","amount":120,"counterparty":"共和文旅产业投资公司","consumptionCat":"","note":"","time":"12:12"},{"id":"mt4jvclq6ud4m","date":"2026-08-02","type":"expense","category":"餐饮","amount":29.9,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4jvclqvi03p","date":"2026-08-02","type":"expense","category":"交通/机票","amount":35,"counterparty":"甘肃省民航机场集团有限公司","consumptionCat":"","note":"","time":"07:24"},{"id":"mt4jvclqygr8a","date":"2026-08-01","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"22:42"},{"id":"mt4jvclqkmnrv","date":"2026-08-01","type":"expense","category":"餐饮","amount":10,"counterparty":"遇见小面","consumptionCat":"","note":"","time":"19:02"},{"id":"mt4jvclqhfk0q","date":"2026-08-01","type":"expense","category":"公共交通","amount":4,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"18:55"},{"id":"mt4jvclqahb69","date":"2026-08-01","type":"expense","category":"转账转出","amount":30,"counterparty":"转账-转给武**","consumptionCat":"","note":"","time":"16:48"},{"id":"mt4jvclqvvt5c","date":"2026-08-01","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"10:35"}],"budgets":{},"consCats":["XM停车费","XM消费","个人零用","不统计"]};</script>
+<script id="jbData">var jbData = {"transactions":[{"id":"mt4jvclpg4xy8","date":"2026-08-19","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给罗**","consumptionCat":"XM消费","note":"","time":"19:36"},{"id":"mt4jvclp7n4t8","date":"2026-08-19","type":"expense","category":"餐饮","amount":25.91,"counterparty":"美团","consumptionCat":"XM消费","note":"","time":"19:52"},{"id":"mt4jvclp09xzz","date":"2026-08-19","type":"expense","category":"购物/便利店","amount":14.69,"counterparty":"新佳宜","consumptionCat":"XM停车费","note":"","time":"18:07"},{"id":"mt4jvclpslg1r","date":"2026-08-19","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"不统计","note":"","time":"15:55"},{"id":"mt4jvclpyox4t","date":"2026-08-19","type":"expense","category":"餐饮","amount":20.7,"counterparty":"遇见小面","consumptionCat":"XM停车费","note":"","time":"12:57"},{"id":"mt4jvclp2m24b","date":"2026-08-19","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"XM停车费","note":"","time":"12:02"},{"id":"mt4jvclpqxmn0","date":"2026-08-19","type":"expense","category":"转账转出","amount":770,"counterparty":"转账-转给海燕","consumptionCat":"生活支出","note":"","time":"10:35"},{"id":"mt4jvclprjpop","date":"2026-08-19","type":"expense","category":"其他","amount":50,"counterparty":"广州市西城物业发展有限公司","consumptionCat":"XM停车费","note":"","time":"10:04"},{"id":"mt4jvclp63x84","date":"2026-08-19","type":"expense","category":"餐饮","amount":14,"counterparty":"陈记石磨肠粉","consumptionCat":"XM消费","note":"","time":"09:01"},{"id":"mt4jvclp174nf","date":"2026-08-19","type":"expense","category":"购物/便利店","amount":26,"counterparty":"省士多","consumptionCat":"XM消费","note":"","time":"08:57"},{"id":"mt4jvclp330nb","date":"2026-08-18","type":"expense","category":"旅行/票务","amount":369.88,"counterparty":"高德云信科技","consumptionCat":"XM报销","note":"","time":"16:24"},{"id":"mt4jvclpjpbzy","date":"2026-08-18","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"XM停车费","note":"","time":"16:17"},{"id":"mt4jvclpgbnos","date":"2026-08-18","type":"expense","category":"餐饮","amount":7.8,"counterparty":"美团","consumptionCat":"XM停车费","note":"","time":"16:02"},{"id":"mt4jvclppb3qu","date":"2026-08-18","type":"income","category":"转账转入","amount":520,"counterparty":"转账-来自海燕","consumptionCat":"生活支出","note":"","time":"11:07"},{"id":"mt4jvclpnche1","date":"2026-08-18","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"XM停车费","note":"","time":"10:55"},{"id":"mt4jvclp97gws","date":"2026-08-18","type":"expense","category":"交通停车","amount":18.98,"counterparty":"深圳普通","consumptionCat":"XM停车费","note":"","time":"09:25"},{"id":"mt4jvclp1limu","date":"2026-08-17","type":"expense","category":"其他","amount":18,"counterparty":"中燃***","consumptionCat":"XM停车费","note":"","time":"22:22"},{"id":"mt4jvclpzuui7","date":"2026-08-17","type":"expense","category":"交通停车","amount":12,"counterparty":"P云停车平台","consumptionCat":"XM停车费","note":"","time":"20:20"},{"id":"mt4jvclpytvwu","date":"2026-08-17","type":"expense","category":"餐饮","amount":20,"counterparty":"扫二维码付款-给明*煲仔","consumptionCat":"XM消费","note":"","time":"19:20"},{"id":"mt4jvclpisj7m","date":"2026-08-17","type":"income","category":"红包","amount":2.7,"counterparty":"微信红包-来自沛县-老刘","consumptionCat":"个人零用","note":"","time":"17:08"},{"id":"mt4jvclpco92q","date":"2026-08-17","type":"income","category":"退款","amount":27,"counterparty":"美团平台商户-退款","consumptionCat":"个人零用","note":"","time":"17:12"},{"id":"mt4jvclpioksl","date":"2026-08-17","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"个人零用","note":"已全额退款","time":"16:11"},{"id":"mt4jvclpvwq96","date":"2026-08-17","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"XM消费","note":"","time":"16:05"},{"id":"mt4jvclpru6ug","date":"2026-08-16","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟","consumptionCat":"不统计","note":"","time":"22:21"},{"id":"mt4jvclplqno6","date":"2026-08-16","type":"expense","category":"餐饮","amount":23.4,"counterparty":"美团","consumptionCat":"个人零用","note":"","time":"20:44"},{"id":"mt4jvclp1zc85","date":"2026-08-16","type":"expense","category":"餐饮","amount":10.7,"counterparty":"美团","consumptionCat":"个人零用","note":"","time":"19:39"},{"id":"mt4jvclpdyup0","date":"2026-08-16","type":"expense","category":"餐饮","amount":31.9,"counterparty":"美团","consumptionCat":"个人零用","note":"","time":"18:35"},{"id":"mt4jvclpknsnf","date":"2026-08-16","type":"expense","category":"餐饮","amount":15.7,"counterparty":"美团","consumptionCat":"个人零用","note":"","time":"18:31"},{"id":"mt4jvclpo2ptk","date":"2026-08-16","type":"expense","category":"餐饮","amount":9.9,"counterparty":"美团","consumptionCat":"个人零用","note":"","time":"18:14"},{"id":"mt4jvclpfdeq7","date":"2026-08-16","type":"expense","category":"交通停车","amount":10,"counterparty":"PP停车","consumptionCat":"个人零用","note":"","time":"15:16"},{"id":"mt4jvclpjwa1v","date":"2026-08-16","type":"expense","category":"交通停车","amount":15,"counterparty":"深圳中心停车场","consumptionCat":"个人零用","note":"","time":"14:26"},{"id":"mt4jvclp5m8mr","date":"2026-08-16","type":"income","category":"退款","amount":9.9,"counterparty":"德克士-退款","consumptionCat":"个人零用","note":"","time":"14:22"},{"id":"mt4jvclp11whq","date":"2026-08-16","type":"expense","category":"餐饮","amount":15,"counterparty":"老碗会陕西手工面","consumptionCat":"个人零用","note":"","time":"13:48"},{"id":"mt4jvclp1ztz8","date":"2026-08-16","type":"expense","category":"餐饮","amount":32,"counterparty":"老碗会陕西手工面","consumptionCat":"个人零用","note":"","time":"13:03"},{"id":"mt4jvclpp65oi","date":"2026-08-15","type":"expense","category":"转账转出","amount":69,"counterparty":"转账-转给海燕","consumptionCat":"生活支出","note":"","time":"23:30"},{"id":"mt4jvclpry3sq","date":"2026-08-15","type":"expense","category":"交通停车","amount":24.68,"counterparty":"深圳普通","consumptionCat":"XM停车费","note":"","time":"22:51"},{"id":"mt4jvclp85bb7","date":"2026-08-15","type":"expense","category":"餐饮","amount":17,"counterparty":"深圳市八合里餐饮管理有限公司","consumptionCat":"个人零用","note":"","time":"20:51"},{"id":"mt4jvclp6ch7q","date":"2026-08-15","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"个人零用","note":"","time":"19:10"},{"id":"mt4jvclp30g14","date":"2026-08-15","type":"income","category":"红包","amount":0.41,"counterparty":"微信红包-来自王**","consumptionCat":"个人零用","note":"","time":"19:19"},{"id":"mt4jvclp8pn4n","date":"2026-08-15","type":"expense","category":"提现","amount":600,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"不统计","note":"","time":"19:20"},{"id":"mt4jvclpkuc64","date":"2026-08-15","type":"income","category":"转账转入","amount":600,"counterparty":"转账-来自弟新","consumptionCat":"不统计","note":"","time":"19:20"},{"id":"mt4jvclpnsya1","date":"2026-08-15","type":"expense","category":"餐饮","amount":28,"counterparty":"惠州市大鹏餐饮管理有限公司","consumptionCat":"个人零用","note":"","time":"12:06"},{"id":"mt4jvclpqxn2g","date":"2026-08-15","type":"expense","category":"交通停车","amount":34.01,"counterparty":"深圳普通","consumptionCat":"XM停车费","note":"","time":"11:33"},{"id":"mt4jvclp4jpe4","date":"2026-08-15","type":"expense","category":"交通停车","amount":6,"counterparty":"深圳微诚达正大城车场","consumptionCat":"XM停车费","note":"","time":"11:05"},{"id":"mt4jvclpk4o43","date":"2026-08-15","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"XM停车费","note":"","time":"10:52"},{"id":"mt4jvclpc5k5s","date":"2026-08-15","type":"expense","category":"餐饮","amount":91,"counterparty":"大米先生","consumptionCat":"","note":"","time":"10:08"},{"id":"mt4jvclpjd74r","date":"2026-08-15","type":"income","category":"退款","amount":0.49,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:38"},{"id":"mt4jvclp96nrg","date":"2026-08-15","type":"expense","category":"交通停车","amount":20,"counterparty":"星星充电","consumptionCat":"","note":"已退款0.49","time":"17:29"},{"id":"mt4jvclpggym3","date":"2026-08-15","type":"income","category":"退款","amount":20,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4jvclpz9gpz","date":"2026-08-15","type":"expense","category":"转账转出","amount":400,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"13:25"},{"id":"mt4jvclpzyysr","date":"2026-08-15","type":"expense","category":"交通停车","amount":5,"counterparty":"PP停车","consumptionCat":"","note":"","time":"12:19"},{"id":"mt4jvclptnb83","date":"2026-08-15","type":"expense","category":"餐饮","amount":10,"counterparty":"德保餐厅","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4jvclplbbny","date":"2026-08-15","type":"expense","category":"汽车服务","amount":19.9,"counterparty":"途虎养车","consumptionCat":"","note":"","time":"10:20"},{"id":"mt4jvclpnf2px","date":"2026-08-14","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"22:31"},{"id":"mt4jvclpq5ipy","date":"2026-08-14","type":"income","category":"红包","amount":0.5,"counterparty":"微信红包-来自袁**小罗","consumptionCat":"","note":"","time":"21:08"},{"id":"mt4jvclps2m1l","date":"2026-08-14","type":"expense","category":"物流快递","amount":18,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4jvclpfxyte","date":"2026-08-14","type":"expense","category":"物流快递","amount":13,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4jvclp22pax","date":"2026-08-14","type":"expense","category":"餐饮","amount":48.63,"counterparty":"珠海市众家好食点餐饮管理有限公司","consumptionCat":"","note":"","time":"12:34"},{"id":"mt4jvclpkgxer","date":"2026-08-14","type":"income","category":"红包","amount":10.46,"counterparty":"微信红包-来自袁**小海","consumptionCat":"","note":"","time":"12:30"},{"id":"mt4jvclp02m95","date":"2026-08-14","type":"expense","category":"提现","amount":1290,"counterparty":"零钱提现-到招商银行(30**)","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4jvclpgy6w4","date":"2026-08-14","type":"income","category":"转账转入","amount":1290,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4jvclpvfygc","date":"2026-08-12","type":"expense","category":"餐饮","amount":6,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:52"},{"id":"mt4jvclpbskzt","date":"2026-08-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4jvclp4rrdl","date":"2026-08-12","type":"expense","category":"交通停车","amount":15.4,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"08:25"},{"id":"mt4jvclp0an6n","date":"2026-08-12","type":"expense","category":"购物/便利店","amount":6,"counterparty":"深圳市宝安区美惠便利店","consumptionCat":"","note":"","time":"07:21"},{"id":"mt4jvclp50jwy","date":"2026-08-11","type":"expense","category":"交通停车","amount":11,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4jvclpi2ifs","date":"2026-08-11","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4jvclpx0o76","date":"2026-08-11","type":"expense","category":"提现","amount":630.96,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4jvclpndala","date":"2026-08-11","type":"income","category":"转账转入","amount":630,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4jvclpk1ea1","date":"2026-08-11","type":"expense","category":"餐饮","amount":24.16,"counterparty":"美团","consumptionCat":"","note":"","time":"10:59"},{"id":"mt4jvclp15o6j","date":"2026-08-11","type":"expense","category":"购物/便利店","amount":17,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"09:59"},{"id":"mt4jvclp0kc8f","date":"2026-08-11","type":"expense","category":"交通停车","amount":24.64,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"09:43"},{"id":"mt4jvclplyviy","date":"2026-08-10","type":"expense","category":"扫码付款","amount":4.5,"counterparty":"扫二维码付款-给汤**","consumptionCat":"","note":"","time":"20:18"},{"id":"mt4jvclp8dmq1","date":"2026-08-10","type":"expense","category":"扫码付款","amount":22.5,"counterparty":"扫二维码付款-给罗**","consumptionCat":"","note":"","time":"20:16"},{"id":"mt4jvclpoclq5","date":"2026-08-10","type":"expense","category":"交通停车","amount":16,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:45"},{"id":"mt4jvclp38j61","date":"2026-08-10","type":"expense","category":"餐饮","amount":20,"counterparty":"明*煲仔饭","consumptionCat":"","note":"","time":"18:35"},{"id":"mt4jvclpkh780","date":"2026-08-10","type":"expense","category":"租车","amount":987.44,"counterparty":"北京神州汽车租赁有限公司","consumptionCat":"","note":"","time":"11:42"},{"id":"mt4jvclpjmghn","date":"2026-08-10","type":"expense","category":"餐饮","amount":26.3,"counterparty":"美团","consumptionCat":"","note":"","time":"11:23"},{"id":"mt4jvclpxcsam","date":"2026-08-10","type":"expense","category":"购物/便利店","amount":20,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"08:20"},{"id":"mt4jvclptm9zj","date":"2026-08-10","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"07:56"},{"id":"mt4jvclp2p8k6","date":"2026-08-09","type":"expense","category":"餐饮","amount":4,"counterparty":"美团","consumptionCat":"","note":"","time":"21:32"},{"id":"mt4jvclpi286w","date":"2026-08-09","type":"expense","category":"餐饮","amount":22,"counterparty":"川渝印象重庆小面（罗湖店）","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4jvclpbvrzu","date":"2026-08-09","type":"expense","category":"公共交通","amount":8,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"21:09"},{"id":"mt4jvclpgans9","date":"2026-08-09","type":"expense","category":"餐饮","amount":61,"counterparty":"肯德基","consumptionCat":"","note":"","time":"20:15"},{"id":"mt4jvclpo7vkr","date":"2026-08-09","type":"expense","category":"餐饮","amount":24,"counterparty":"兰州***拉面","consumptionCat":"","note":"","time":"19:16"},{"id":"mt4jvclp2jaw0","date":"2026-08-09","type":"expense","category":"扫码付款","amount":17.5,"counterparty":"扫二维码付款-给力强","consumptionCat":"","note":"","time":"08:07"},{"id":"mt4jvclpwjgp1","date":"2026-08-09","type":"expense","category":"购物/超市","amount":25,"counterparty":"西宁市城东区***超市","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4jvclp62gg3","date":"2026-08-09","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4jvclp5r88h","date":"2026-08-09","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4jvclp5q13e","date":"2026-08-09","type":"expense","category":"加油/能源","amount":406,"counterparty":"陆通能源有限责任公司","consumptionCat":"","note":"","time":"06:13"},{"id":"mt4jvclp98gnm","date":"2026-08-08","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"19:05"},{"id":"mt4jvclp0r4wj","date":"2026-08-08","type":"expense","category":"电商购物","amount":58.66,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"10:04"},{"id":"mt4jvclp7kufi","date":"2026-08-08","type":"expense","category":"电商购物","amount":79.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"已全额退款","time":"10:03"},{"id":"mt4jvclp5vmxr","date":"2026-08-08","type":"expense","category":"电商购物","amount":52.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"09:58"},{"id":"mt4jvclp2itgr","date":"2026-08-08","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"09:04"},{"id":"mt4jvclp64h1o","date":"2026-08-08","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:50"},{"id":"mt4jvclpzlk8g","date":"2026-08-08","type":"expense","category":"景区门票","amount":10,"counterparty":"张掖丹霞景区管理股份有限公司","consumptionCat":"","note":"","time":"08:48"},{"id":"mt4jvclpris5v","date":"2026-08-07","type":"expense","category":"扫码付款","amount":5,"counterparty":"扫二维码付款-给仁心**","consumptionCat":"","note":"","time":"20:26"},{"id":"mt4jvclpf088x","date":"2026-08-07","type":"expense","category":"转账转出","amount":2800,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"18:12"},{"id":"mt4jvclps3gmy","date":"2026-08-07","type":"expense","category":"交通停车","amount":6,"counterparty":"玉门服务区","consumptionCat":"","note":"","time":"13:33"},{"id":"mt4jvclplkjrj","date":"2026-08-07","type":"expense","category":"加油/能源","amount":540,"counterparty":"甘肃中油交通油品有限公司","consumptionCat":"","note":"","time":"12:56"},{"id":"mt4jvclpbrnf2","date":"2026-08-07","type":"expense","category":"餐饮","amount":13,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:55"},{"id":"mt4jvclpejfon","date":"2026-08-07","type":"expense","category":"扫码付款","amount":21,"counterparty":"扫二维码付款-给Lih","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4jvclpfb67q","date":"2026-08-07","type":"expense","category":"餐饮","amount":14,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:28"},{"id":"mt4jvclp49ja8","date":"2026-08-07","type":"expense","category":"扫码付款","amount":50,"counterparty":"扫二维码付款-给黑子","consumptionCat":"","note":"","time":"07:58"},{"id":"mt4jvclpp8i3q","date":"2026-08-07","type":"expense","category":"扫码付款","amount":15,"counterparty":"扫二维码付款-给米粒儿","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4jvclpn8ul9","date":"2026-08-07","type":"expense","category":"扫码付款","amount":10,"counterparty":"扫二维码付款-给代**爷爷","consumptionCat":"","note":"","time":"07:19"},{"id":"mt4jvclqxot0d","date":"2026-08-07","type":"expense","category":"餐饮","amount":24,"counterparty":"敦煌市众发餐饮","consumptionCat":"","note":"","time":"06:44"},{"id":"mt4jvclq9eypa","date":"2026-08-07","type":"expense","category":"餐饮","amount":20,"counterparty":"敦煌市***餐饮店","consumptionCat":"","note":"","time":"06:07"},{"id":"mt4jvclqzhzjc","date":"2026-08-06","type":"expense","category":"餐饮","amount":55.7,"counterparty":"美团","consumptionCat":"","note":"","time":"18:45"},{"id":"mt4jvclq07owl","date":"2026-08-06","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"14:48"},{"id":"mt4jvclq9j18y","date":"2026-08-06","type":"income","category":"退款","amount":9.9,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:18"},{"id":"mt4jvclq6jevl","date":"2026-08-06","type":"income","category":"退款","amount":9.92,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:16"},{"id":"mt4jvclqgw3qp","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.92,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:15"},{"id":"mt4jvclq1f7fx","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:02"},{"id":"mt4jvclq2tnpv","date":"2026-08-06","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"13:58"},{"id":"mt4jvclqtlly6","date":"2026-08-06","type":"expense","category":"餐饮","amount":16,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"13:24"},{"id":"mt4jvclqxt9qr","date":"2026-08-06","type":"income","category":"红包","amount":2.29,"counterparty":"微信红包-来自大风-周维龙","consumptionCat":"","note":"","time":"12:17"},{"id":"mt4jvclqwhkgc","date":"2026-08-06","type":"expense","category":"扫码付款","amount":18,"counterparty":"扫二维码付款-给好物小铺夏夏","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4jvclqlurcx","date":"2026-08-06","type":"expense","category":"餐饮","amount":20,"counterparty":"牛肉沙葱饼","consumptionCat":"","note":"","time":"11:35"},{"id":"mt4jvclqj8nln","date":"2026-08-06","type":"expense","category":"餐饮","amount":5.79,"counterparty":"蜜雪冰城","consumptionCat":"","note":"","time":"10:32"},{"id":"mt4jvclqdoxg7","date":"2026-08-06","type":"expense","category":"餐饮","amount":8,"counterparty":"揽山","consumptionCat":"","note":"","time":"08:35"},{"id":"mt4jvclqbip7b","date":"2026-08-06","type":"expense","category":"景区门票","amount":240,"counterparty":"黑独山景区","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4jvclq6ldee","date":"2026-08-06","type":"expense","category":"扫码付款","amount":24,"counterparty":"扫二维码付款-给**萍**","consumptionCat":"","note":"","time":"07:39"},{"id":"mt4jvclqh3ygy","date":"2026-08-05","type":"expense","category":"其他","amount":32,"counterparty":"黑风寨便民服务","consumptionCat":"","note":"","time":"18:28"},{"id":"mt4jvclqlf6e7","date":"2026-08-05","type":"expense","category":"交通停车","amount":10,"counterparty":"大柴旦雅丹停车场","consumptionCat":"","note":"","time":"19:27"},{"id":"mt4jvclq6cvip","date":"2026-08-05","type":"expense","category":"加油/能源","amount":422.28,"counterparty":"中国石化销售股份有限公司","consumptionCat":"","note":"","time":"17:12"},{"id":"mt4jvclq3kyv1","date":"2026-08-05","type":"expense","category":"餐饮","amount":22.1,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"16:42"},{"id":"mt4jvclqqvep1","date":"2026-08-04","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"12:37"},{"id":"mt4jvclq1x5c9","date":"2026-08-04","type":"expense","category":"扫码付款","amount":30,"counterparty":"扫二维码付款-给lori李","consumptionCat":"","note":"","time":"11:56"},{"id":"mt4jvclq3si4g","date":"2026-08-04","type":"expense","category":"景区门票","amount":10,"counterparty":"翡翠湖观光塔","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4jvclqz0l9m","date":"2026-08-04","type":"expense","category":"餐饮/其他","amount":18,"counterparty":"青甘***","consumptionCat":"","note":"","time":"10:28"},{"id":"mt4jvclqztllv","date":"2026-08-04","type":"expense","category":"通讯","amount":29.94,"counterparty":"中国电信","consumptionCat":"","note":"","time":"08:30"},{"id":"mt4jvclq6uai9","date":"2026-08-04","type":"expense","category":"餐饮","amount":30,"counterparty":"大柴旦伊香阁美食餐厅","consumptionCat":"","note":"","time":"07:34"},{"id":"mt4jvclq81c3q","date":"2026-08-03","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"22:33"},{"id":"mt4jvclqxmqfq","date":"2026-08-03","type":"income","category":"退款","amount":635.2,"counterparty":"高德云信科技-退款","consumptionCat":"","note":"","time":"22:11"},{"id":"mt4jvclq37i9s","date":"2026-08-03","type":"expense","category":"扫码付款","amount":7,"counterparty":"扫二维码付款-给宁宁","consumptionCat":"","note":"","time":"21:21"},{"id":"mt4jvclqkk95q","date":"2026-08-03","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给小丁烤羊肉","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4jvclqgyq3b","date":"2026-08-03","type":"expense","category":"交通/租车","amount":40,"counterparty":"格尔木**汽车运输服务有限公司","consumptionCat":"","note":"","time":"16:49"},{"id":"mt4jvclq0rjfn","date":"2026-08-03","type":"expense","category":"旅行/票务","amount":794,"counterparty":"高德云信科技","consumptionCat":"","note":"已退款635.20","time":"15:43"},{"id":"mt4jvclqbjrnk","date":"2026-08-03","type":"expense","category":"住宿","amount":39,"counterparty":"清**酒店","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4jvclq4vq2r","date":"2026-08-02","type":"expense","category":"加油/能源","amount":471.15,"counterparty":"乌兰高速北加油站","consumptionCat":"","note":"","time":"20:25"},{"id":"mt4jvclqzmod8","date":"2026-08-02","type":"expense","category":"景区门票","amount":10,"counterparty":"青海湖茶卡盐湖文化旅游发展有限公司","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4jvclqax9jr","date":"2026-08-02","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"17:22"},{"id":"mt4jvclqyuhjd","date":"2026-08-02","type":"expense","category":"转账转出","amount":11300,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"15:46"},{"id":"mt4jvclq9hlfi","date":"2026-08-02","type":"expense","category":"景区门票","amount":120,"counterparty":"共和文旅产业投资公司","consumptionCat":"","note":"","time":"12:12"},{"id":"mt4jvclq6ud4m","date":"2026-08-02","type":"expense","category":"餐饮","amount":29.9,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4jvclqvi03p","date":"2026-08-02","type":"expense","category":"交通/机票","amount":35,"counterparty":"甘肃省民航机场集团有限公司","consumptionCat":"","note":"","time":"07:24"},{"id":"mt4jvclqygr8a","date":"2026-08-01","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"22:42"},{"id":"mt4jvclqkmnrv","date":"2026-08-01","type":"expense","category":"餐饮","amount":10,"counterparty":"遇见小面","consumptionCat":"","note":"","time":"19:02"},{"id":"mt4jvclqhfk0q","date":"2026-08-01","type":"expense","category":"公共交通","amount":4,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"18:55"},{"id":"mt4jvclqahb69","date":"2026-08-01","type":"expense","category":"转账转出","amount":30,"counterparty":"转账-转给武**","consumptionCat":"","note":"","time":"16:48"},{"id":"mt4jvclqvvt5c","date":"2026-08-01","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"10:35"}],"budgets":{},"consCats":["XM停车费","XM消费","个人零用","不统计","生活支出","XM报销"]};</script>
 
 
 </body></html>
