@@ -138,7 +138,7 @@
     <button data-tab="add" class="">记一笔</button>
     <button data-tab="list" class="">明细</button>
     <button data-tab="dash" class="">看板</button>
-    <button data-tab="budget">预算</button>
+    <button data-tab="budget" class="">预算</button>
     <button data-tab="data" class="active">数据</button>
   </nav>
 </header>
@@ -237,6 +237,12 @@
     </div>
     <div class="ccRow"><span class="ccName">生活支出</span>
       <span class="ccAct"><button class="btn ghost sm" data-i="4">改名</button><button class="btn danger sm" data-d="4">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">XM报销</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="5">改名</button><button class="btn danger sm" data-d="5">删除</button></span>
+    </div>
+    <div class="ccRow"><span class="ccName">青甘环线支出</span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="6">改名</button><button class="btn danger sm" data-d="6">删除</button></span>
     </div></div>
       <div id="listWrap">
     <div class="muted" style="margin-bottom:10px">共 <b>153</b> 条 · 收入 <b style="color:var(--income)">¥3,768.77</b> · 支出 <b style="color:var(--expense)">¥25,166.12</b> · 合计（支出−收入） <b style="color:var(--income)">¥21,397.35</b></div>
@@ -2438,7 +2444,35 @@
     <div class="card">
       <h2>分类月度预算</h2>
       <p class="desc">给支出分类设置每月限额，超支会高亮提醒。仅统计当前月支出。</p>
-      <div id="budgetList"></div>
+      <div id="budgetList"><div class="bud-row">
+      <div class="name">XM停车费</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="XM停车费" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">XM消费</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="XM消费" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">个人零用</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="个人零用" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">不统计</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="不统计" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">生活支出</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="生活支出" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">XM报销</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="XM报销" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div><div class="bud-row">
+      <div class="name">青甘环线支出</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="青甘环线支出" value="" placeholder="不限制留空"></label>
+      <div></div>
+    </div></div>
       <div class="row" style="margin-top:14px;justify-content:flex-end">
         <button class="btn ghost" id="budgetReset">全部清空</button>
         <button class="btn" id="budgetSave">保存预算</button>
