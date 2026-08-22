@@ -1,0 +1,3391 @@
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>记账本</title>
+<style>
+  :root{
+    --bg:#f5f6fa; --card:#ffffff; --text:#1f2430; --sub:#6b7280;
+    --line:#eceef2; --brand:#3b82f6; --brand-d:#2563eb;
+    --income:#16a34a; --expense:#ef4444; --warn:#f59e0b; --danger:#dc2626;
+    --shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.04);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  header.app{
+    background:linear-gradient(120deg,#3b82f6,#6366f1);
+    color:#fff; padding:18px 22px; position:sticky; top:0; z-index:20;
+    box-shadow:0 2px 12px rgba(59,130,246,.25);
+  }
+  header.app h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.5px}
+  header.app .tag{font-size:12px;opacity:.85;margin-top:2px}
+  nav.tabs{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+  nav.tabs button{
+    border:none;background:rgba(255,255,255,.18);color:#fff;
+    padding:8px 16px;border-radius:999px;cursor:pointer;font-size:14px;
+    transition:.15s; font-weight:500;
+  }
+  nav.tabs button:hover{background:rgba(255,255,255,.3)}
+  nav.tabs button.active{background:#fff;color:var(--brand-d);font-weight:700}
+  main{max-width:1080px;margin:22px auto;padding:0 16px 60px}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+  .card h2{margin:0 0 14px;font-size:16px;font-weight:700}
+  .card .desc{color:var(--sub);font-size:13px;margin:-8px 0 14px}
+  .grid{display:grid;gap:14px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  label.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--sub);flex:1;min-width:140px}
+  label.fld .req{color:var(--expense)}
+  input,select,textarea{
+    border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+    font-size:14px;color:var(--text);background:#fff;outline:none;width:100%;
+    font-family:inherit;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg button{border:none;background:#fff;padding:9px 18px;cursor:pointer;font-size:14px;color:var(--sub)}
+  .seg button.on[data-type="expense"]{background:var(--expense);color:#fff}
+  .seg button.on[data-type="income"]{background:var(--income);color:#fff}
+  .btn{
+    border:none;border-radius:10px;padding:10px 18px;cursor:pointer;font-size:14px;
+    font-weight:600;background:var(--brand);color:#fff;transition:.15s;
+  }
+  .btn:hover{background:var(--brand-d)}
+  .btn.ghost{background:#eef2ff;color:var(--brand-d)}
+  .btn.ghost:hover{background:#e0e7ff}
+  .btn.danger{background:#fee2e2;color:var(--danger)}
+  .btn.danger:hover{background:#fecaca}
+  .btn.sm{padding:6px 12px;font-size:13px}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .stat{background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:16px}
+  .stat .k{font-size:13px;color:var(--sub)}
+  .stat .v{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:.5px}
+  .stat .v.income{color:var(--income)} .stat .v.expense{color:var(--expense)}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .chart-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .legend{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:160px}
+  .legend-item{display:flex;align-items:center;gap:8px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600;font-size:13px;background:#fafbff}
+  tbody tr:hover{background:#f8faff}
+  td.amt{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+  td.amt.income{color:var(--income)} td.amt.expense{color:var(--expense)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;background:#eef2ff;color:var(--brand-d)}
+  .cell-cat{width:120px;padding:6px 8px;font-size:13px;border:1px solid #e3e6ee;border-radius:8px;background:#fff;color:inherit}
+  .cell-cat:focus{outline:none;border-color:var(--brand)}
+  td.datecell{white-space:nowrap}
+  td.datecell .wk{display:inline-block;margin-left:6px;font-size:12px;color:var(--sub)}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
+  .filters label{font-size:12px;color:var(--sub);display:flex;flex-direction:column;gap:4px}
+  .filters input,.filters select{padding:8px 10px;font-size:13px;min-width:120px}
+  .catFilter{display:flex;gap:6px;align-items:center}
+  .catFilter select{min-width:110px}
+  #fl_consCatAdd{padding:6px 10px;font-size:14px;line-height:1;min-width:auto}
+  .consCatNew{margin-top:6px}
+  .consCatNew input{padding:7px 10px;font-size:13px;border:1px solid var(--brand);border-radius:8px;min-width:200px}
+  .consCatManage{margin:10px 0 4px;border:1px solid #e3e6ee;border-radius:10px;padding:6px 10px;background:#fafbfc;max-width:360px}
+  .ccRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0}
+  .ccRow + .ccRow{border-top:1px solid #eef0f4}
+  .ccName{font-size:13px}
+  .ccAct{display:flex;gap:6px}
+  .bar{height:9px;border-radius:999px;background:#eef0f4;overflow:hidden}
+  .bar>span{display:block;height:100%;border-radius:999px}
+  .bud-row{display:grid;grid-template-columns:140px 1fr 120px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+  .bud-row .name{font-weight:600}
+  .bud-meta{font-size:12px;color:var(--sub);margin-top:3px}
+  .over{color:var(--danger);font-weight:700}
+  .empty{color:var(--sub);text-align:center;padding:30px 0;font-size:14px}
+  .modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .modal-mask.show{display:flex}
+  .modal{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:22px;box-shadow:var(--shadow)}
+  .modal h3{margin:0 0 14px;font-size:17px}
+  .map-grid{display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:center;font-size:13px}
+  .map-grid b{color:var(--sub);font-weight:600}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1f2430;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;z-index:99;opacity:0;transition:.25s;pointer-events:none;box-shadow:var(--shadow)}
+  .toast.show{opacity:1}
+  .muted{color:var(--sub);font-size:13px}
+  .hint{background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:14px}
+  /* GitHub 同步 */
+  .gh-box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafbff;margin-top:14px}
+  .gh-box .gh-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  .gh-box input[type=password]{min-width:280px}
+  .sync-status{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;color:#fff;font-size:12px;font-weight:600}
+  .sync-status .sync-dot{width:8px;height:8px;border-radius:50%;background:#fff}
+  .sync-status.idle{background:#07c160}
+  .sync-status.syncing{background:#1a73e8}
+  .sync-status.error{background:#ff4d4f}
+  .sync-status.warn{background:#fa8c16}
+  .sync-status.syncing .sync-dot{animation:pulse 1s infinite}
+  @keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+  .drop{margin-top:10px}
+  .drop label{border:2px dashed var(--line);border-radius:12px;display:block;padding:22px;text-align:center;color:var(--sub);cursor:pointer;font-size:14px}
+  .drop label:hover{border-color:var(--brand);color:var(--brand)}
+  .drop input{display:none}
+  @media(max-width:760px){.summary{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.bud-row{grid-template-columns:90px 1fr}.bud-row>div:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header class="app">
+  <h1>💰 记账本</h1>
+  <div class="tag">单文件 · 数据存本地浏览器 · 支持 Excel 导入导出 <span id="ver" style="opacity:.6">v1.9</span></div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="add" class="">记一笔</button>
+    <button data-tab="list">明细</button>
+    <button data-tab="dash">看板</button>
+    <button data-tab="budget">预算</button>
+    <button data-tab="data" class="active">数据</button>
+  </nav>
+</header>
+
+<main>
+  <!-- 记账 -->
+  <section class="tabview" data-view="add" hidden="">
+    <div class="card">
+      <h2>记一笔</h2>
+      <p class="desc">收入或支出，填完点「保存」即可。数据自动存在本机浏览器。</p>
+      <div class="row" style="align-items:center">
+        <label class="fld" style="flex:none">
+          <span>类型</span>
+          <span class="seg" id="typeSeg">
+            <button type="button" data-type="expense" class="on">支出</button>
+            <button type="button" data-type="income">收入</button>
+          </span>
+        </label>
+        <label class="fld">
+          <span>日期 <span class="req">*</span></span>
+          <input type="date" id="f_date">
+        </label>
+        <label class="fld">
+          <span>金额（元） <span class="req">*</span></span>
+          <input type="number" id="f_amount" step="0.01" min="0" placeholder="0.00">
+        </label>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <label class="fld">
+          <span>分类 <span class="req">*</span></span>
+          <select id="f_category"><option>餐饮</option><option>交通</option><option>购物</option><option>居住</option><option>娱乐</option><option>医疗</option><option>教育</option><option>人情</option><option>通讯</option><option>其他</option></select>
+        </label>
+        <label class="fld">
+          <span>交易对象（可选）</span>
+          <input type="text" id="f_counterparty" placeholder="美团 / 工资-某公司 / 张三…">
+        </label>
+        <label class="fld">
+          <span>时间（可选）</span>
+          <input type="time" id="f_time">
+        </label>
+        <label class="fld">
+          <span>消费分类（可选）</span>
+          <input type="text" id="f_consumptionCat" placeholder="如：早餐 / 打车 / 房租">
+        </label>
+      </div>
+      <label class="fld" style="margin-top:14px">
+        <span>备注（可选）</span>
+        <textarea id="f_note" rows="2" placeholder="例如：午饭、地铁、工资…"></textarea>
+      </label>
+      <div class="row" style="margin-top:16px;justify-content:flex-end">
+        <button class="btn ghost" id="resetBtn">清空</button>
+        <button class="btn" id="saveBtn">保存</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 明细 -->
+  <section class="tabview" data-view="list" hidden="">
+    <div class="card">
+      <h2>收支明细</h2>
+      <div class="filters">
+        <label>月份<input type="month" id="fl_month"></label>
+        <label>类型
+          <select id="fl_type"><option value="">全部</option><option value="expense">支出</option><option value="income">收入</option></select>
+        </label>
+        <label>分类
+          <select id="fl_category"><option value="">全部</option><option>餐饮</option><option>交通</option><option>购物</option><option>居住</option><option>娱乐</option><option>医疗</option><option>教育</option><option>人情</option><option>通讯</option><option>其他</option><option>工资</option><option>奖金</option><option>投资</option><option>兼职</option><option>理财</option><option>扫码付款</option><option>购物/便利店</option><option>转账转出</option><option>旅行/票务</option><option>交通停车</option><option>转账转入</option><option>红包</option><option>退款</option><option>提现</option><option>汽车服务</option><option>物流快递</option><option>租车</option><option>公共交通</option><option>购物/超市</option><option>加油/能源</option><option>电商购物</option><option>景区门票</option><option>餐饮/其他</option><option>交通/租车</option><option>住宿</option><option>交通/机票</option></select>
+        </label>
+        <label>消费分类
+          <span class="catFilter">
+            <select id="fl_consCat"><option value="">全部</option><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option></select>
+            <button type="button" id="fl_consCatAdd" class="btn ghost sm" title="新建消费分类">＋</button>
+            <button type="button" id="fl_consCatManage" class="btn ghost sm" title="管理消费分类">管理</button>
+          </span>
+          <span id="consCatNewWrap" class="consCatNew" hidden="">
+            <input id="consCatNew" placeholder="输入分类名，回车确认">
+          </span>
+        </label>
+        <label>搜索
+          <input type="text" id="fl_q" placeholder="备注 / 账户关键词">
+        </label>
+        <button class="btn ghost sm" id="fl_clear">重置筛选</button>
+      </div>
+      <div id="consCatManage" class="consCatManage" hidden=""></div>
+      <div id="listWrap">
+    <div class="muted" style="margin-bottom:10px">共 <b>153</b> 条 · 收入 <b style="color:var(--income)">¥3,768.77</b> · 支出 <b style="color:var(--expense)">¥25,166.12</b> · 合计（支出−收入） <b style="color:var(--income)">¥21,397.35</b></div>
+    <table>
+      <thead><tr><th>日期</th><th>时间</th><th>类别</th><th>交易对象</th><th style="text-align:right">金额</th><th>备注</th><th>类别</th><th>消费分类</th><th></th></tr></thead>
+      <tbody>
+        
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>19:36</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给罗**</td>
+            <td class="amt expense">-25.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5yelpl" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5yelpl">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5yelpl">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>19:52</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-25.91</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf58vumm" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf58vumm">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf58vumm">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>18:07</td>
+            <td><span class="pill">支出</span></td>
+            <td>新佳宜</td>
+            <td class="amt expense">-14.69</td>
+            <td>—</td>
+            <td>购物/便利店</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5cbrgs" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5cbrgs">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5cbrgs">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>15:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给弟新</td>
+            <td class="amt expense">-200.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf56ds8x" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf56ds8x">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf56ds8x">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>12:57</td>
+            <td><span class="pill">支出</span></td>
+            <td>遇见小面</td>
+            <td class="amt expense">-20.70</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5z8nt4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5z8nt4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5z8nt4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>12:02</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5ragu4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5ragu4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5ragu4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>10:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给海燕</td>
+            <td class="amt expense">-770.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5yx11z" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5yx11z">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5yx11z">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>10:04</td>
+            <td><span class="pill">支出</span></td>
+            <td>广州市西城物业发展有限公司</td>
+            <td class="amt expense">-50.00</td>
+            <td>—</td>
+            <td>其他</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf55weho" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf55weho">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf55weho">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>09:01</td>
+            <td><span class="pill">支出</span></td>
+            <td>陈记石磨肠粉</td>
+            <td class="amt expense">-14.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf596fox" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf596fox">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf596fox">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046252-12<span class="wk">—</span></td>
+            <td>08:57</td>
+            <td><span class="pill">支出</span></td>
+            <td>省士多</td>
+            <td class="amt expense">-26.00</td>
+            <td>—</td>
+            <td>购物/便利店</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5d0x0o" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5d0x0o">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5d0x0o">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>16:24</td>
+            <td><span class="pill">支出</span></td>
+            <td>高德云信科技</td>
+            <td class="amt expense">-369.88</td>
+            <td>—</td>
+            <td>旅行/票务</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5hnfh3" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5hnfh3">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5hnfh3">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>16:17</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市顺易通信息科技有限公司</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf51rsa2" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf51rsa2">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf51rsa2">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>16:02</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-7.80</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf58cne4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf58cne4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf58cne4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>11:07</td>
+            <td><span class="pill">收入</span></td>
+            <td>转账-来自海燕</td>
+            <td class="amt income">+520.00</td>
+            <td>—</td>
+            <td>转账转入</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5zwpyr" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5zwpyr">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5zwpyr">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>10:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市顺易通信息科技有限公司</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5mtzde" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5mtzde">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5mtzde">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046251-12<span class="wk">—</span></td>
+            <td>09:25</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳普通</td>
+            <td class="amt expense">-18.98</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf57k4r2" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf57k4r2">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf57k4r2">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>22:22</td>
+            <td><span class="pill">支出</span></td>
+            <td>中燃***</td>
+            <td class="amt expense">-18.00</td>
+            <td>—</td>
+            <td>其他</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5m5cwq" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5m5cwq">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5m5cwq">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>20:20</td>
+            <td><span class="pill">支出</span></td>
+            <td>P云停车平台</td>
+            <td class="amt expense">-12.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5zw26w" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5zw26w">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5zw26w">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>19:20</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给明*煲仔</td>
+            <td class="amt expense">-20.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5ky55j" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5ky55j">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5ky55j">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>17:08</td>
+            <td><span class="pill">收入</span></td>
+            <td>微信红包-来自沛县-老刘</td>
+            <td class="amt income">+2.70</td>
+            <td>—</td>
+            <td>红包</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5wzfqt" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5wzfqt">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5wzfqt">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>17:12</td>
+            <td><span class="pill">收入</span></td>
+            <td>美团平台商户-退款</td>
+            <td class="amt income">+27.00</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf54iudb" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf54iudb">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf54iudb">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>16:11</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-27.00</td>
+            <td>已全额退款</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5tlmjh" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5tlmjh">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5tlmjh">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046250-12<span class="wk">—</span></td>
+            <td>16:05</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf54xr2z" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf54xr2z">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf54xr2z">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>22:21</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给弟</td>
+            <td class="amt expense">-100.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5pzn3w" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5pzn3w">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5pzn3w">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>20:44</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-23.40</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf55suot" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf55suot">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf55suot">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>19:39</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-10.70</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf561eox" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf561eox">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf561eox">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>18:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-31.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5ulv4l" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5ulv4l">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5ulv4l">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>18:31</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-15.70</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf53kyga" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf53kyga">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf53kyga">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>18:14</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5uv077" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5uv077">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5uv077">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>15:16</td>
+            <td><span class="pill">支出</span></td>
+            <td>PP停车</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf51q04e" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf51q04e">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf51q04e">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>14:26</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳中心停车场</td>
+            <td class="amt expense">-15.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5tucj0" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5tucj0">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5tucj0">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>14:22</td>
+            <td><span class="pill">收入</span></td>
+            <td>德克士-退款</td>
+            <td class="amt income">+9.90</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5pgh5b" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5pgh5b">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5pgh5b">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>13:48</td>
+            <td><span class="pill">支出</span></td>
+            <td>老碗会陕西手工面</td>
+            <td class="amt expense">-15.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5oi5bf" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5oi5bf">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5oi5bf">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046249-12<span class="wk">—</span></td>
+            <td>13:03</td>
+            <td><span class="pill">支出</span></td>
+            <td>老碗会陕西手工面</td>
+            <td class="amt expense">-32.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5x4o2q" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5x4o2q">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5x4o2q">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>23:30</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给海燕</td>
+            <td class="amt expense">-69.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5qubn3" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5qubn3">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5qubn3">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>22:51</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳普通</td>
+            <td class="amt expense">-24.68</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5d84w6" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5d84w6">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5d84w6">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>20:51</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市八合里餐饮管理有限公司</td>
+            <td class="amt expense">-17.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5vhk7t" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5vhk7t">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5vhk7t">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>19:10</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5k6977" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5k6977">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5k6977">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>19:19</td>
+            <td><span class="pill">收入</span></td>
+            <td>微信红包-来自王**</td>
+            <td class="amt income">+0.41</td>
+            <td>—</td>
+            <td>红包</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5myq68" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5myq68">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5myq68">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>19:20</td>
+            <td><span class="pill">支出</span></td>
+            <td>零钱提现-到招商银行(3026)</td>
+            <td class="amt expense">-600.00</td>
+            <td>—</td>
+            <td>提现</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5t0iai" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5t0iai">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5t0iai">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>19:20</td>
+            <td><span class="pill">收入</span></td>
+            <td>转账-来自弟新</td>
+            <td class="amt income">+600.00</td>
+            <td>—</td>
+            <td>转账转入</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5qdekm" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5qdekm">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5qdekm">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>12:06</td>
+            <td><span class="pill">支出</span></td>
+            <td>惠州市大鹏餐饮管理有限公司</td>
+            <td class="amt expense">-28.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5qe6au" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5qe6au">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5qe6au">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>11:33</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳普通</td>
+            <td class="amt expense">-34.01</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5b5ky2" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5b5ky2">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5b5ky2">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>11:05</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳微诚达正大城车场</td>
+            <td class="amt expense">-6.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5milhx" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5milhx">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5milhx">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>10:52</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf50iaab" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf50iaab">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf50iaab">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>10:08</td>
+            <td><span class="pill">支出</span></td>
+            <td>大米先生</td>
+            <td class="amt expense">-91.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5ntqrs" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5ntqrs">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5ntqrs">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>17:38</td>
+            <td><span class="pill">收入</span></td>
+            <td>星星充电-退款</td>
+            <td class="amt income">+0.49</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5nrpmt" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5nrpmt">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5nrpmt">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>17:29</td>
+            <td><span class="pill">支出</span></td>
+            <td>星星充电</td>
+            <td class="amt expense">-20.00</td>
+            <td>已退款0.49</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5jmar4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5jmar4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5jmar4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>17:28</td>
+            <td><span class="pill">收入</span></td>
+            <td>星星充电-退款</td>
+            <td class="amt income">+20.00</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf51aa5h" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf51aa5h">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf51aa5h">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>13:25</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给弟新</td>
+            <td class="amt expense">-400.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5emvm4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5emvm4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5emvm4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>12:19</td>
+            <td><span class="pill">支出</span></td>
+            <td>PP停车</td>
+            <td class="amt expense">-5.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5m3h25" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5m3h25">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5m3h25">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>12:09</td>
+            <td><span class="pill">支出</span></td>
+            <td>德保餐厅</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5cyprj" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5cyprj">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5cyprj">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046248-12<span class="wk">—</span></td>
+            <td>10:20</td>
+            <td><span class="pill">支出</span></td>
+            <td>途虎养车</td>
+            <td class="amt expense">-19.90</td>
+            <td>—</td>
+            <td>汽车服务</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5o46ei" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5o46ei">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5o46ei">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>22:31</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给弟新</td>
+            <td class="amt expense">-100.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5usyf0" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5usyf0">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5usyf0">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>21:08</td>
+            <td><span class="pill">收入</span></td>
+            <td>微信红包-来自袁**小罗</td>
+            <td class="amt income">+0.50</td>
+            <td>—</td>
+            <td>红包</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5h6wq3" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5h6wq3">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5h6wq3">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>12:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>顺丰速运</td>
+            <td class="amt expense">-18.00</td>
+            <td>—</td>
+            <td>物流快递</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5rnskn" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5rnskn">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5rnskn">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>12:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>顺丰速运</td>
+            <td class="amt expense">-13.00</td>
+            <td>—</td>
+            <td>物流快递</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5vxnzd" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5vxnzd">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5vxnzd">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>12:34</td>
+            <td><span class="pill">支出</span></td>
+            <td>珠海市众家好食点餐饮管理有限公司</td>
+            <td class="amt expense">-48.63</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5j25ja" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5j25ja">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5j25ja">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>12:30</td>
+            <td><span class="pill">收入</span></td>
+            <td>微信红包-来自袁**小海</td>
+            <td class="amt income">+10.46</td>
+            <td>—</td>
+            <td>红包</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5q9u9c" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5q9u9c">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5q9u9c">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>10:54</td>
+            <td><span class="pill">支出</span></td>
+            <td>零钱提现-到招商银行(30**)</td>
+            <td class="amt expense">-1,290.00</td>
+            <td>—</td>
+            <td>提现</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5a8h7w" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5a8h7w">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5a8h7w">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046247-12<span class="wk">—</span></td>
+            <td>10:54</td>
+            <td><span class="pill">收入</span></td>
+            <td>转账-来自弟新</td>
+            <td class="amt income">+1,290.00</td>
+            <td>—</td>
+            <td>转账转入</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf56r065" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf56r065">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf56r065">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046245-12<span class="wk">—</span></td>
+            <td>08:52</td>
+            <td><span class="pill">支出</span></td>
+            <td>肯德基</td>
+            <td class="amt expense">-6.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5hy44n" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5hy44n">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5hy44n">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046245-12<span class="wk">—</span></td>
+            <td>08:45</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf50u2f7" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf50u2f7">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf50u2f7">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046245-12<span class="wk">—</span></td>
+            <td>08:25</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳普通</td>
+            <td class="amt expense">-15.40</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf55tdkp" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf55tdkp">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf55tdkp">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046245-12<span class="wk">—</span></td>
+            <td>07:21</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市宝安区美惠便利店</td>
+            <td class="amt expense">-6.00</td>
+            <td>—</td>
+            <td>购物/便利店</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5gdo4l" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5gdo4l">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5gdo4l">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>17:05</td>
+            <td><span class="pill">支出</span></td>
+            <td>P云停车平台</td>
+            <td class="amt expense">-11.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5kldog" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5kldog">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5kldog">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>17:05</td>
+            <td><span class="pill">支出</span></td>
+            <td>P云停车平台</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5iwdh7" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5iwdh7">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5iwdh7">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>11:17</td>
+            <td><span class="pill">支出</span></td>
+            <td>零钱提现-到招商银行(3026)</td>
+            <td class="amt expense">-630.96</td>
+            <td>—</td>
+            <td>提现</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5ewzsm" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5ewzsm">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5ewzsm">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>11:17</td>
+            <td><span class="pill">收入</span></td>
+            <td>转账-来自弟新</td>
+            <td class="amt income">+630.00</td>
+            <td>—</td>
+            <td>转账转入</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf57wt3a" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf57wt3a">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf57wt3a">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>10:59</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-24.16</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5f27wf" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5f27wf">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5f27wf">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>09:59</td>
+            <td><span class="pill">支出</span></td>
+            <td>广东 ELEVEN 7</td>
+            <td class="amt expense">-17.00</td>
+            <td>—</td>
+            <td>购物/便利店</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5bgi7k" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5bgi7k">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5bgi7k">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046244-12<span class="wk">—</span></td>
+            <td>09:43</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳普通</td>
+            <td class="amt expense">-24.64</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf5088nh" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf5088nh">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf5088nh">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>20:18</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给汤**</td>
+            <td class="amt expense">-4.50</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf53q8eg" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf53q8eg">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf53q8eg">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>20:16</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给罗**</td>
+            <td class="amt expense">-22.50</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6le7hj" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6le7hj">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6le7hj">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>17:45</td>
+            <td><span class="pill">支出</span></td>
+            <td>P云停车平台</td>
+            <td class="amt expense">-16.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6sw97f" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6sw97f">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6sw97f">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>18:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>明*煲仔饭</td>
+            <td class="amt expense">-20.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6r520b" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6r520b">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6r520b">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>11:42</td>
+            <td><span class="pill">支出</span></td>
+            <td>北京神州汽车租赁有限公司</td>
+            <td class="amt expense">-987.44</td>
+            <td>—</td>
+            <td>租车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6sxx2j" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6sxx2j">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6sxx2j">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>11:23</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-26.30</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6bz6k5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6bz6k5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6bz6k5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>08:20</td>
+            <td><span class="pill">支出</span></td>
+            <td>广东 ELEVEN 7</td>
+            <td class="amt expense">-20.00</td>
+            <td>—</td>
+            <td>购物/便利店</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6df3wq" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6df3wq">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6df3wq">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046243-12<span class="wk">—</span></td>
+            <td>07:56</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6vhsmv" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6vhsmv">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6vhsmv">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>21:32</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-4.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6lnoa3" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6lnoa3">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6lnoa3">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>21:12</td>
+            <td><span class="pill">支出</span></td>
+            <td>川渝印象重庆小面（罗湖店）</td>
+            <td class="amt expense">-22.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6emz2j" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6emz2j">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6emz2j">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>21:09</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市地铁相关运营主体</td>
+            <td class="amt expense">-8.00</td>
+            <td>—</td>
+            <td>公共交通</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6mfsen" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6mfsen">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6mfsen">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>20:15</td>
+            <td><span class="pill">支出</span></td>
+            <td>肯德基</td>
+            <td class="amt expense">-61.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6nozmb" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6nozmb">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6nozmb">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>19:16</td>
+            <td><span class="pill">支出</span></td>
+            <td>兰州***拉面</td>
+            <td class="amt expense">-24.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6zy3td" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6zy3td">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6zy3td">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>08:07</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给力强</td>
+            <td class="amt expense">-17.50</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6j3b1t" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6j3b1t">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6j3b1t">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>07:23</td>
+            <td><span class="pill">支出</span></td>
+            <td>西宁市城东区***超市</td>
+            <td class="amt expense">-25.00</td>
+            <td>—</td>
+            <td>购物/超市</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6h2d71" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6h2d71">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6h2d71">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>06:33</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给Z</td>
+            <td class="amt expense">-1.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6l00gk" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6l00gk">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6l00gk">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>06:33</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给Z</td>
+            <td class="amt expense">-1.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6rnjuu" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6rnjuu">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6rnjuu">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046242-12<span class="wk">—</span></td>
+            <td>06:13</td>
+            <td><span class="pill">支出</span></td>
+            <td>陆通能源有限责任公司</td>
+            <td class="amt expense">-406.00</td>
+            <td>—</td>
+            <td>加油/能源</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6qn7ka" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6qn7ka">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6qn7ka">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>19:05</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给弟新</td>
+            <td class="amt expense">-200.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6iomkz" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6iomkz">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6iomkz">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>10:04</td>
+            <td><span class="pill">支出</span></td>
+            <td>抖音电商商家</td>
+            <td class="amt expense">-58.66</td>
+            <td>—</td>
+            <td>电商购物</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6dfjev" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6dfjev">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6dfjev">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>10:03</td>
+            <td><span class="pill">支出</span></td>
+            <td>抖音电商商家</td>
+            <td class="amt expense">-79.90</td>
+            <td>已全额退款</td>
+            <td>电商购物</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf63h7fy" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf63h7fy">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf63h7fy">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>09:58</td>
+            <td><span class="pill">支出</span></td>
+            <td>抖音电商商家</td>
+            <td class="amt expense">-52.90</td>
+            <td>—</td>
+            <td>电商购物</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6imdgg" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6imdgg">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6imdgg">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>09:04</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6rokz0" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6rokz0">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6rokz0">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>08:50</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6nd17j" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6nd17j">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6nd17j">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046241-12<span class="wk">—</span></td>
+            <td>08:48</td>
+            <td><span class="pill">支出</span></td>
+            <td>张掖丹霞景区管理股份有限公司</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>景区门票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6okd1u" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6okd1u">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6okd1u">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>20:26</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给仁心**</td>
+            <td class="amt expense">-5.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6wwdet" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6wwdet">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6wwdet">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>18:12</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给何信</td>
+            <td class="amt expense">-2,800.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf617ymb" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf617ymb">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf617ymb">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>13:33</td>
+            <td><span class="pill">支出</span></td>
+            <td>玉门服务区</td>
+            <td class="amt expense">-6.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6nl029" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6nl029">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6nl029">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>12:56</td>
+            <td><span class="pill">支出</span></td>
+            <td>甘肃中油交通油品有限公司</td>
+            <td class="amt expense">-540.00</td>
+            <td>—</td>
+            <td>加油/能源</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6ejp8v" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6ejp8v">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6ejp8v">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>08:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>敦煌市江海早餐店</td>
+            <td class="amt expense">-13.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6qsrbp" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6qsrbp">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6qsrbp">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>08:45</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给Lih</td>
+            <td class="amt expense">-21.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6ypc1f" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6ypc1f">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6ypc1f">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>08:28</td>
+            <td><span class="pill">支出</span></td>
+            <td>敦煌市江海早餐店</td>
+            <td class="amt expense">-14.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6qubth" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6qubth">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6qubth">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>07:58</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给黑子</td>
+            <td class="amt expense">-50.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6ryxzi" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6ryxzi">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6ryxzi">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>07:23</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给米粒儿</td>
+            <td class="amt expense">-15.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6scy6o" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6scy6o">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6scy6o">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>07:19</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给代**爷爷</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6wh6f7" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6wh6f7">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6wh6f7">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>06:44</td>
+            <td><span class="pill">支出</span></td>
+            <td>敦煌市众发餐饮</td>
+            <td class="amt expense">-24.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6nvy5p" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6nvy5p">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6nvy5p">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046240-12<span class="wk">—</span></td>
+            <td>06:07</td>
+            <td><span class="pill">支出</span></td>
+            <td>敦煌市***餐饮店</td>
+            <td class="amt expense">-20.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6sco71" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6sco71">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6sco71">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>18:45</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-55.70</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6yt88z" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6yt88z">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6yt88z">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>14:48</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-23.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6axoe5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6axoe5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6axoe5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>14:18</td>
+            <td><span class="pill">收入</span></td>
+            <td>luckin coffee瑞幸咖啡-退款</td>
+            <td class="amt income">+9.90</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf60qo1b" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf60qo1b">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf60qo1b">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>14:16</td>
+            <td><span class="pill">收入</span></td>
+            <td>luckin coffee瑞幸咖啡-退款</td>
+            <td class="amt income">+9.92</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6jiuvx" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6jiuvx">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6jiuvx">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>14:15</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.92</td>
+            <td>已全额退款</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf643jnl" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf643jnl">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf643jnl">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>14:02</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>已全额退款</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6lphox" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6lphox">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6lphox">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>13:58</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6x39os" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6x39os">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6x39os">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>13:24</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团平台商户</td>
+            <td class="amt expense">-16.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6daydc" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6daydc">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6daydc">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>12:17</td>
+            <td><span class="pill">收入</span></td>
+            <td>微信红包-来自大风-周维龙</td>
+            <td class="amt income">+2.29</td>
+            <td>—</td>
+            <td>红包</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf68rox5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf68rox5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf68rox5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>12:09</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给好物小铺夏夏</td>
+            <td class="amt expense">-18.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6yonu4" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6yonu4">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6yonu4">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>11:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>牛肉沙葱饼</td>
+            <td class="amt expense">-20.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6r9ook" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6r9ook">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6r9ook">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>10:32</td>
+            <td><span class="pill">支出</span></td>
+            <td>蜜雪冰城</td>
+            <td class="amt expense">-5.79</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6zw8g9" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6zw8g9">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6zw8g9">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>08:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>揽山</td>
+            <td class="amt expense">-8.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf69ed1h" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf69ed1h">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf69ed1h">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>08:24</td>
+            <td><span class="pill">支出</span></td>
+            <td>黑独山景区</td>
+            <td class="amt expense">-240.00</td>
+            <td>—</td>
+            <td>景区门票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6svqe3" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6svqe3">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6svqe3">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046239-12<span class="wk">—</span></td>
+            <td>07:39</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给**萍**</td>
+            <td class="amt expense">-24.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf600jgi" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf600jgi">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf600jgi">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046238-12<span class="wk">—</span></td>
+            <td>18:28</td>
+            <td><span class="pill">支出</span></td>
+            <td>黑风寨便民服务</td>
+            <td class="amt expense">-32.00</td>
+            <td>—</td>
+            <td>其他</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6lbed7" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6lbed7">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6lbed7">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046238-12<span class="wk">—</span></td>
+            <td>19:27</td>
+            <td><span class="pill">支出</span></td>
+            <td>大柴旦雅丹停车场</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf62z1gk" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf62z1gk">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf62z1gk">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046238-12<span class="wk">—</span></td>
+            <td>17:12</td>
+            <td><span class="pill">支出</span></td>
+            <td>中国石化销售股份有限公司</td>
+            <td class="amt expense">-422.28</td>
+            <td>—</td>
+            <td>加油/能源</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf62wqce" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf62wqce">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf62wqce">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046238-12<span class="wk">—</span></td>
+            <td>16:42</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团平台商户</td>
+            <td class="amt expense">-22.10</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6w7vie" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6w7vie">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6w7vie">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>12:37</td>
+            <td><span class="pill">支出</span></td>
+            <td>P云停车平台</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>交通停车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6kvrvk" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6kvrvk">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6kvrvk">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>11:56</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给lori李</td>
+            <td class="amt expense">-30.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6wwuh8" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6wwuh8">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6wwuh8">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>10:30</td>
+            <td><span class="pill">支出</span></td>
+            <td>翡翠湖观光塔</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>景区门票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6u9p6k" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6u9p6k">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6u9p6k">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>10:28</td>
+            <td><span class="pill">支出</span></td>
+            <td>青甘***</td>
+            <td class="amt expense">-18.00</td>
+            <td>—</td>
+            <td>餐饮/其他</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6pdsvu" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6pdsvu">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6pdsvu">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>08:30</td>
+            <td><span class="pill">支出</span></td>
+            <td>中国电信</td>
+            <td class="amt expense">-29.94</td>
+            <td>—</td>
+            <td>通讯</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6w3e86" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6w3e86">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6w3e86">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046237-12<span class="wk">—</span></td>
+            <td>07:34</td>
+            <td><span class="pill">支出</span></td>
+            <td>大柴旦伊香阁美食餐厅</td>
+            <td class="amt expense">-30.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6fk6e2" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6fk6e2">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6fk6e2">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>22:33</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-27.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf68ed0w" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf68ed0w">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf68ed0w">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>22:11</td>
+            <td><span class="pill">收入</span></td>
+            <td>高德云信科技-退款</td>
+            <td class="amt income">+635.20</td>
+            <td>—</td>
+            <td>退款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf62e97q" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf62e97q">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf62e97q">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>21:21</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给宁宁</td>
+            <td class="amt expense">-7.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf62zw8d" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf62zw8d">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf62zw8d">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>21:12</td>
+            <td><span class="pill">支出</span></td>
+            <td>扫二维码付款-给小丁烤羊肉</td>
+            <td class="amt expense">-25.00</td>
+            <td>—</td>
+            <td>扫码付款</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6wqumq" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6wqumq">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6wqumq">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>16:49</td>
+            <td><span class="pill">支出</span></td>
+            <td>格尔木**汽车运输服务有限公司</td>
+            <td class="amt expense">-40.00</td>
+            <td>—</td>
+            <td>交通/租车</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6tmy20" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6tmy20">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6tmy20">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>15:43</td>
+            <td><span class="pill">支出</span></td>
+            <td>高德云信科技</td>
+            <td class="amt expense">-794.00</td>
+            <td>已退款635.20</td>
+            <td>旅行/票务</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6c80jg" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6c80jg">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6c80jg">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046236-12<span class="wk">—</span></td>
+            <td>10:30</td>
+            <td><span class="pill">支出</span></td>
+            <td>清**酒店</td>
+            <td class="amt expense">-39.00</td>
+            <td>—</td>
+            <td>住宿</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6qrd6f" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6qrd6f">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6qrd6f">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>20:25</td>
+            <td><span class="pill">支出</span></td>
+            <td>乌兰高速北加油站</td>
+            <td class="amt expense">-471.15</td>
+            <td>—</td>
+            <td>加油/能源</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6vq31m" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6vq31m">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6vq31m">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>17:28</td>
+            <td><span class="pill">支出</span></td>
+            <td>青海湖茶卡盐湖文化旅游发展有限公司</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>景区门票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6dfmvq" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6dfmvq">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6dfmvq">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>17:22</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-27.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf65oal5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf65oal5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf65oal5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>15:46</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给何信</td>
+            <td class="amt expense">-11,300.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6milp1" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6milp1">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6milp1">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>12:12</td>
+            <td><span class="pill">支出</span></td>
+            <td>共和文旅产业投资公司</td>
+            <td class="amt expense">-120.00</td>
+            <td>—</td>
+            <td>景区门票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6vg25t" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6vg25t">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6vg25t">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>08:24</td>
+            <td><span class="pill">支出</span></td>
+            <td>肯德基</td>
+            <td class="amt expense">-29.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf623ue5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf623ue5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf623ue5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046235-12<span class="wk">—</span></td>
+            <td>07:24</td>
+            <td><span class="pill">支出</span></td>
+            <td>甘肃省民航机场集团有限公司</td>
+            <td class="amt expense">-35.00</td>
+            <td>—</td>
+            <td>交通/机票</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6jlh2o" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6jlh2o">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6jlh2o">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046234-12<span class="wk">—</span></td>
+            <td>22:42</td>
+            <td><span class="pill">支出</span></td>
+            <td>luckin coffee</td>
+            <td class="amt expense">-9.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6st4cn" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6st4cn">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6st4cn">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046234-12<span class="wk">—</span></td>
+            <td>19:02</td>
+            <td><span class="pill">支出</span></td>
+            <td>遇见小面</td>
+            <td class="amt expense">-10.00</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf68d796" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf68d796">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf68d796">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046234-12<span class="wk">—</span></td>
+            <td>18:55</td>
+            <td><span class="pill">支出</span></td>
+            <td>深圳市地铁相关运营主体</td>
+            <td class="amt expense">-4.00</td>
+            <td>—</td>
+            <td>公共交通</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf66z457" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf66z457">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf66z457">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046234-12<span class="wk">—</span></td>
+            <td>16:48</td>
+            <td><span class="pill">支出</span></td>
+            <td>转账-转给武**</td>
+            <td class="amt expense">-30.00</td>
+            <td>—</td>
+            <td>转账转出</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf67spe5" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf67spe5">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf67spe5">删</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="datecell">+046234-12<span class="wk">—</span></td>
+            <td>10:35</td>
+            <td><span class="pill">支出</span></td>
+            <td>美团</td>
+            <td class="amt expense">-23.90</td>
+            <td>—</td>
+            <td>餐饮</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="mt4ehaf6d3spp" value="" placeholder="—"></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="mt4ehaf6d3spp">编辑</button>
+              <button class="btn danger sm" data-del="mt4ehaf6d3spp">删</button>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    <datalist id="consCatLive"><option value="XM停车费">XM停车费</option><option value="XM消费">XM消费</option><option value="个人零用">个人零用</option><option value="不统计">不统计</option></datalist></div>
+    </div>
+  </section>
+
+  <!-- 看板 -->
+  <section class="tabview" data-view="dash" hidden="">
+    <div class="card">
+      <h2>本月概览</h2>
+      <div class="summary" id="dashSummary"></div>
+    </div>
+    <div class="card">
+      <h2>近 6 个月收支趋势</h2>
+      <div id="trendChart"></div>
+    </div>
+    <div class="charts">
+      <div class="card">
+        <h2>本月支出分类占比</h2>
+        <div id="pieChart"></div>
+      </div>
+      <div class="card">
+        <h2>本月消费分类占比</h2>
+        <div id="pieChartConsCat"></div>
+      </div>
+      <div class="card">
+        <h2>预算提醒</h2>
+        <div id="budgetAlert"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 预算 -->
+  <section class="tabview" data-view="budget" hidden="">
+    <div class="card">
+      <h2>分类月度预算</h2>
+      <p class="desc">给支出分类设置每月限额，超支会高亮提醒。仅统计当前月支出。</p>
+      <div id="budgetList"></div>
+      <div class="row" style="margin-top:14px;justify-content:flex-end">
+        <button class="btn ghost" id="budgetReset">全部清空</button>
+        <button class="btn" id="budgetSave">保存预算</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据 -->
+  <section class="tabview" data-view="data">
+    <div class="card">
+      <h2>导入 Excel / CSV</h2>
+      <div class="hint">支持 .xlsx / .xls / .csv。首次导入会让你确认「表头→字段」的对应关系，避免列错位。Excel 解析需要联网加载库，离线时请用 CSV（已自动兼容 UTF-8 与 GBK 编码）。</div>
+      <div class="drop">
+        <label>📥 点击选择文件，或拖拽到此处
+          <input type="file" id="importFile" accept=".xlsx,.xls,.csv">
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <h2>导出 / 备份</h2>
+      <p class="desc">定期导出备份，防止清缓存或换设备丢数据。</p>
+      <div class="row">
+        <button class="btn" id="expXlsx">导出 Excel (.xlsx)</button>
+        <button class="btn ghost" id="expCsv">导出 CSV (.csv)</button>
+        <button class="btn ghost" id="tplCsv">下载导入模板</button>
+        <button class="btn ghost" id="loadSample">填充示例数据</button>
+      </div>
+      <div class="row" style="margin-top:16px">
+        <button class="btn danger" id="clearAll">清空全部数据</button>
+        <button class="btn danger" id="clearCache">清除浏览器缓存</button>
+      </div>
+      <p class="muted" style="margin-top:10px">「清空全部数据」仅删记账明细（保留预算）；「清除浏览器缓存」会清空本应用在本浏览器里存的所有数据（含预算），彻底还原到初始状态。</p>
+      <div class="gh-box">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <strong>🌐 GitHub 同步</strong>
+          <span id="syncStatus" class="sync-status syncing"><span class="sync-dot"></span><span id="syncText">同步中... · 分支:main · 文件:记账本.html</span></span>
+        </div>
+        <p class="muted" style="margin:6px 0 0">把整个记账本（含全部数据）同步到 GitHub 仓库 <code>maidang0706/daiban</code> 的 <code>记账本.html</code>，实现换设备/多人共享。Token 仅存本机浏览器，不会写入文件。</p>
+        <div class="gh-row">
+          <label style="font-size:12px;color:var(--sub)">GitHub Token
+            <input type="password" id="ghToken" placeholder="粘贴你的 GitHub Token（含 repo 权限）" autocomplete="off">
+          </label>
+          <button class="btn ghost sm" id="ghSaveToken">保存 Token</button>
+        </div>
+        <div class="gh-row">
+          <label style="font-size:12px;color:var(--sub);display:flex;align-items:center;gap:6px">
+            <input type="checkbox" id="ghAuto" style="width:auto"> 打开文件时自动从 GitHub 拉取最新
+          </label>
+        </div>
+        <div class="gh-row">
+          <button class="btn ghost" id="downloadBtn">📥 从 GitHub 下载</button>
+          <button class="btn" id="syncBtn" disabled="">⏳ 同步中...</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 编辑弹窗 -->
+<div class="modal-mask" id="editMask">
+  <div class="modal">
+    <h3>编辑记录</h3>
+    <div class="row" style="align-items:center">
+      <label class="fld" style="flex:none">
+        <span>类型</span>
+        <span class="seg" id="e_typeSeg">
+          <button type="button" data-type="expense">支出</button>
+          <button type="button" data-type="income">收入</button>
+        </span>
+      </label>
+      <label class="fld"><span>日期</span><input type="date" id="e_date"></label>
+      <label class="fld"><span>金额</span><input type="number" id="e_amount" step="0.01" min="0"></label>
+      <label class="fld"><span>时间</span><input type="time" id="e_time"></label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <label class="fld"><span>分类</span><select id="e_category"><option>餐饮</option><option>交通</option><option>购物</option><option>居住</option><option>娱乐</option><option>医疗</option><option>教育</option><option>人情</option><option>通讯</option><option>其他</option></select></label>
+      <label class="fld"><span>交易对象</span><input type="text" id="e_counterparty"></label>
+      <label class="fld"><span>消费分类</span><input type="text" id="e_consumptionCat"></label>
+    </div>
+    <label class="fld" style="margin-top:14px"><span>备注</span><textarea id="e_note" rows="2"></textarea></label>
+    <div class="row" style="margin-top:18px;justify-content:flex-end">
+      <button class="btn ghost" id="e_cancel">取消</button>
+      <button class="btn" id="e_save">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导入映射弹窗 -->
+<div class="modal-mask" id="mapMask">
+  <div class="modal">
+    <h3>确认导入字段映射</h3>
+    <p class="muted" id="mapCount" style="margin:0 0 12px"></p>
+    <div class="map-grid" id="mapGrid"></div>
+    <div class="row" style="margin-top:14px;align-items:center">
+      <span class="muted">导入方式：</span>
+      <span class="seg" id="mapMode">
+        <button type="button" data-mode="append" class="on">追加</button>
+        <button type="button" data-mode="replace">覆盖全部</button>
+      </span>
+    </div>
+    <div class="muted" id="mapPreview" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:18px;justify-content:flex-end">
+      <button class="btn ghost" id="map_cancel">取消</button>
+      <button class="btn" id="map_ok">确认导入</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast show" id="toast">已保存 Token</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script>
+"use strict";
+/* ---------- 常量 ---------- */
+const EXPENSE_CATS = ["餐饮","交通","购物","居住","娱乐","医疗","教育","人情","通讯","其他"];
+const INCOME_CATS  = ["工资","奖金","投资","兼职","理财","其他"];
+const PALETTE = ["#3b82f6","#ef4444","#f59e0b","#10b981","#8b5cf6","#ec4899","#06b6d4","#84cc16","#f97316","#64748b","#14b8a6","#a855f7"];
+const TYPE_LABEL = {income:"收入", expense:"支出"};
+
+/* ---------- 状态 ---------- */
+const LS_TX = "jb_transactions", LS_BUD = "jb_budgets", LS_CONS = "jb_consCats";
+let state = { transactions: migrate(load(LS_TX, [])), budgets: load(LS_BUD, {}), consCats: load(LS_CONS, []) };
+function migrate(list){
+  return (Array.isArray(list)?list:[]).map(t=> Object.assign({}, t, {
+    counterparty: t.counterparty!==undefined ? t.counterparty : (t.account||""),
+    consumptionCat: t.consumptionCat!==undefined ? t.consumptionCat : ""
+  }));
+}
+let curType = "expense";
+let editId = null;
+let mapRows = null, mapMode = "append";
+
+function load(k, def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def; }catch(_){ return def; } }
+function save(){ localStorage.setItem(LS_TX, JSON.stringify(state.transactions)); localStorage.setItem(LS_BUD, JSON.stringify(state.budgets)); localStorage.setItem(LS_CONS, JSON.stringify(state.consCats||[])); persistEmbedded(); }
+function addConsCat(name){
+  name=(name||"").trim(); if(!name) return false;
+  state.consCats = Array.isArray(state.consCats)?state.consCats:[];
+  if(!state.consCats.includes(name)){ state.consCats.push(name); save(); }
+  return true;
+}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function monthKey(d){ return (d||"").slice(0,7); }
+function thisMonth(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"); }
+function fmt(n){ return (Number(n)||0).toLocaleString("zh-CN",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function weekday(d){
+  const m=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(d||"");
+  if(!m) return "—";
+  const dt=new Date(+m[1], +m[2]-1, +m[3]);
+  if(isNaN(dt)) return "—";
+  return "周"+"日一二三四五六"[dt.getDay()];
+}
+function catsOf(type){ return type==="income"?INCOME_CATS:EXPENSE_CATS; }
+
+/* ---------- 工具 ---------- */
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
+function $(id){ return document.getElementById(id); }
+
+/* ---------- 导航 ---------- */
+$("tabs").addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  const tab=b.dataset.tab;
+  document.querySelectorAll(".tabview").forEach(s=>s.hidden = s.dataset.view!==tab);
+  if(tab==="list") renderList();
+  if(tab==="dash") renderDash();
+  if(tab==="budget") renderBudget();
+});
+
+/* ---------- 表单：分类联动 ---------- */
+function fillCategorySelect(sel, type, selected){
+  sel.innerHTML = catsOf(type).map(c=>`<option ${c===selected?"selected":""}>${c}</option>`).join("");
+}
+fillCategorySelect($("f_category"), curType);
+fillCategorySelect($("e_category"), "expense");
+
+$("typeSeg").addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  curType=b.dataset.type;
+  document.querySelectorAll("#typeSeg button").forEach(x=>x.classList.toggle("on", x===b));
+  fillCategorySelect($("f_category"), curType);
+});
+function setSeg(segId, type){
+  document.querySelectorAll("#"+segId+" button").forEach(x=>x.classList.toggle("on", x.dataset.type===type));
+}
+
+/* 默认日期=今天 */
+$("f_date").value = new Date().toISOString().slice(0,10);
+
+/* ---------- 保存一笔 ---------- */
+$("saveBtn").addEventListener("click", ()=>{
+  const date=$("f_date").value, amount=parseFloat($("f_amount").value);
+  const category=$("f_category").value, counterparty=$("f_counterparty").value.trim(), note=$("f_note").value.trim();
+  const consumptionCat=$("f_consumptionCat").value.trim();
+  if(!date){ toast("请填写日期"); return; }
+  if(!(amount>0)){ toast("请填写有效金额"); return; }
+  state.transactions.push({ id:uid(), date, type:curType, category, amount, counterparty, consumptionCat, note, time:$("f_time").value });
+  save();
+  toast("已保存 ✓");
+  $("f_amount").value=""; $("f_counterparty").value=""; $("f_consumptionCat").value=""; $("f_note").value=""; $("f_time").value="";
+  $("f_date").value=new Date().toISOString().slice(0,10);
+});
+$("resetBtn").addEventListener("click", ()=>{
+  $("f_amount").value=""; $("f_counterparty").value=""; $("f_consumptionCat").value=""; $("f_note").value="";
+});
+
+/* ---------- 明细列表 ---------- */
+function allCategories(){ return [...new Set([...EXPENSE_CATS,...INCOME_CATS, ...state.transactions.map(t=>t.category)])]; }
+function initFilterCats(){
+  const sel=$("fl_category");
+  sel.innerHTML = '<option value="">全部</option>' + allCategories().map(c=>`<option>${c}</option>`).join("");
+}
+function allConsCats(){ return [...new Set([...(Array.isArray(state.consCats)?state.consCats:[]), ...state.transactions.map(t=>t.consumptionCat).filter(Boolean)])]; }
+function initFilterConsCats(){
+  const sel=$("fl_consCat");
+  sel.innerHTML = '<option value="">全部</option>' + allConsCats().map(c=>`<option value="${c}">${c}</option>`).join("");
+}
+function filteredTx(){
+  const m=$("fl_month").value, ty=$("fl_type").value, cat=$("fl_category").value, consCat=$("fl_consCat").value, q=$("fl_q").value.trim().toLowerCase();
+  return state.transactions
+    .filter(t=> !m || monthKey(t.date)===m)
+    .filter(t=> !ty || t.type===ty)
+    .filter(t=> !cat || t.category===cat)
+    .filter(t=> !consCat || consCat==="__new__" || t.consumptionCat===consCat)
+    .filter(t=> !q || (t.note||"").toLowerCase().includes(q) || (t.counterparty||"").toLowerCase().includes(q))
+    .sort((a,b)=> a.date<b.date?1:a.date>b.date?-1:0);
+}
+function renderList(){
+  initFilterCats();
+  initFilterConsCats();
+  const rows=filteredTx();
+  const wrap=$("listWrap");
+  if(!rows.length){ wrap.innerHTML='<div class="empty">没有匹配的记录，去「记一笔」添加吧～</div>'; return; }
+  let exp=0, inc=0, excluded=0;
+  rows.forEach(t=>{
+    if((t.consumptionCat||"")==="其他"){ excluded++; return; }
+    t.type==="expense"?exp+=t.amount:inc+=t.amount;
+  });
+  const net = exp - inc;
+  const netColor = net<0 ? "var(--expense)" : "var(--income)";
+  const consOptions = allConsCats().map(c=>`<option value="${c}">${c}</option>`).join("");
+  wrap.innerHTML = `
+    <div class="muted" style="margin-bottom:10px">共 <b>${rows.length}</b> 条${excluded?` · <span style="color:var(--warn)">其中消费分类「其他」${excluded} 条不计入</span>`:""} · 收入 <b style="color:var(--income)">¥${fmt(inc)}</b> · 支出 <b style="color:var(--expense)">¥${fmt(exp)}</b> · 合计（支出−收入） <b style="color:${netColor}">¥${fmt(net)}</b></div>
+    <table>
+      <thead><tr><th>日期</th><th>时间</th><th>类别</th><th>交易对象</th><th style="text-align:right">金额</th><th>备注</th><th>类别</th><th>消费分类</th><th></th></tr></thead>
+      <tbody>
+        ${rows.map(t=>`
+          <tr>
+            <td class="datecell">${t.date}<span class="wk">${weekday(t.date)}</span></td>
+            <td>${t.time||"—"}</td>
+            <td><span class="pill">${TYPE_LABEL[t.type]}</span></td>
+            <td>${t.counterparty||"—"}</td>
+            <td class="amt ${t.type}">${t.type==="expense"?"-":"+"}${fmt(t.amount)}</td>
+            <td>${t.note||"—"}</td>
+            <td>${t.category}</td>
+            <td><input class="cell-cat" list="consCatLive" data-id="${t.id}" value="${t.consumptionCat||""}" placeholder="—" /></td>
+            <td style="text-align:right;white-space:nowrap">
+              <button class="btn ghost sm" data-edit="${t.id}">编辑</button>
+              <button class="btn danger sm" data-del="${t.id}">删</button>
+            </td>
+          </tr>`).join("")}
+      </tbody>
+    </table>
+    <datalist id="consCatLive">${consOptions}</datalist>`;
+}
+["fl_month","fl_type","fl_category","fl_consCat","fl_q"].forEach(id=> $(id).addEventListener("input", renderList));
+$("fl_clear").addEventListener("click", ()=>{ $("fl_month").value="";$("fl_type").value="";$("fl_category").value="";$("fl_consCat").value="";$("fl_q").value="";renderList(); });
+function commitNewConsCat(){
+  const v=$("consCatNew").value.trim();
+  $("consCatNew").value=""; $("consCatNewWrap").hidden=true;
+  if(!v) return;
+  if(addConsCat(v)){ renderList(); $("fl_consCat").value=v; toast("已新建消费分类："+v); }
+}
+$("fl_consCatAdd").addEventListener("click", ()=>{
+  $("consCatNewWrap").hidden=false; $("consCatNew").focus();
+});
+$("consCatNew").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); commitNewConsCat(); } });
+$("consCatNew").addEventListener("blur", commitNewConsCat);
+$("fl_consCat").addEventListener("change", renderList);
+/* ---------- 消费分类管理（改名 / 删除） ---------- */
+let consCatManageList=[];
+function renderConsCatManage(){
+  const box=$("consCatManage");
+  consCatManageList=allConsCats();
+  if(!consCatManageList.length){ box.innerHTML='<div class="muted" style="padding:8px 4px">暂无消费分类</div>'; return; }
+  box.innerHTML = consCatManageList.map((c,i)=>`
+    <div class="ccRow"><span class="ccName"></span>
+      <span class="ccAct"><button class="btn ghost sm" data-i="${i}">改名</button><button class="btn danger sm" data-d="${i}">删除</button></span>
+    </div>`).join("");
+  box.querySelectorAll('.ccRow').forEach((row,i)=> row.querySelector('.ccName').textContent = consCatManageList[i]);
+}
+function renameConsCat(oldName, newName){
+  state.transactions.forEach(t=>{ if(t.consumptionCat===oldName) t.consumptionCat=newName; });
+  if(Array.isArray(state.consCats)){
+    const idx=state.consCats.indexOf(oldName);
+    if(idx>=0) state.consCats[idx]=newName;
+  }
+  save(); renderList();
+}
+function deleteConsCat(name){
+  state.transactions.forEach(t=>{ if(t.consumptionCat===name) t.consumptionCat=""; });
+  if(Array.isArray(state.consCats)) state.consCats=state.consCats.filter(c=>c!==name);
+  save(); renderList();
+}
+$("fl_consCatManage").addEventListener("click", ()=>{
+  const box=$("consCatManage");
+  box.hidden=!box.hidden;
+  if(!box.hidden){ renderConsCatManage(); }
+});
+$("consCatManage").addEventListener("click", e=>{
+  const ren=e.target.closest("[data-i]"), del=e.target.closest("[data-d]");
+  if(ren){
+    const old=consCatManageList[+ren.dataset.i];
+    const nv=prompt("把「"+old+"」改名为：", old);
+    if(nv && nv.trim() && nv.trim()!==old){ renameConsCat(old, nv.trim()); renderConsCatManage(); toast("已改名："+nv.trim()); }
+  }
+  if(del){
+    const name=consCatManageList[+del.dataset.d];
+    if(confirm("删除消费分类「"+name+"」？\n使用该分类的记录将清空其消费分类（保留金额与备注）。")){ deleteConsCat(name); renderConsCatManage(); toast("已删除："+name); }
+  }
+});
+$("listWrap").addEventListener("click", e=>{
+  const ed=e.target.closest("[data-edit]"), dl=e.target.closest("[data-del]");
+  if(ed) openEdit(ed.dataset.edit);
+  if(dl){ if(confirm("确定删除这条记录？")){ state.transactions=state.transactions.filter(t=>t.id!==dl.dataset.del); save(); renderList(); toast("已删除"); } }
+});
+$("listWrap").addEventListener("change", e=>{
+  const inp=e.target.closest(".cell-cat");
+  if(inp){
+    const t=state.transactions.find(x=>x.id===inp.dataset.id);
+    if(t){ t.consumptionCat=inp.value.trim(); save(); renderList(); }
+  }
+});
+
+/* ---------- 编辑 ---------- */
+function openEdit(id){
+  const t=state.transactions.find(x=>x.id===id); if(!t) return;
+  editId=id;
+  $("e_date").value=t.date; $("e_amount").value=t.amount; $("e_counterparty").value=t.counterparty||""; $("e_consumptionCat").value=t.consumptionCat||""; $("e_note").value=t.note||""; $("e_time").value=t.time||"";
+  fillCategorySelect($("e_category"), t.type, t.category); setSeg("e_typeSeg", t.type);
+  $("editMask").classList.add("show");
+}
+$("e_typeSeg").addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return; const ty=b.dataset.type;
+  setSeg("e_typeSeg", ty); fillCategorySelect($("e_category"), ty);
+});
+$("e_cancel").addEventListener("click", ()=>$("editMask").classList.remove("show"));
+$("e_save").addEventListener("click", ()=>{
+  const t=state.transactions.find(x=>x.id===editId); if(!t) return;
+  const amount=parseFloat($("e_amount").value);
+  if(!(amount>0)){ toast("金额无效"); return; }
+  const ty=document.querySelector("#e_typeSeg button.on").dataset.type;
+  Object.assign(t,{ date:$("e_date").value, type:ty, category:$("e_category").value, amount, counterparty:$("e_counterparty").value.trim(), consumptionCat:$("e_consumptionCat").value.trim(), note:$("e_note").value.trim(), time:$("e_time").value });
+  save(); $("editMask").classList.remove("show"); renderList(); toast("已更新 ✓");
+});
+
+/* ---------- 看板 ---------- */
+function txInMonth(m){ return state.transactions.filter(t=>monthKey(t.date)===m); }
+function lastNMonths(n){
+  const arr=[]; const d=new Date(); d.setDate(1);
+  for(let i=n-1;i>=0;i--){ const t=new Date(d.getFullYear(), d.getMonth()-i,1); arr.push(t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")); }
+  return arr;
+}
+function renderDash(){
+  const m=thisMonth();
+  const cur=txInMonth(m);
+  let inc=0, exp=0; cur.forEach(t=> t.type==="income"?inc+=t.amount:exp+=t.amount);
+  $("dashSummary").innerHTML = `
+    <div class="stat"><div class="k">${m} 收入</div><div class="v income">¥${fmt(inc)}</div></div>
+    <div class="stat"><div class="k">${m} 支出</div><div class="v expense">¥${fmt(exp)}</div></div>
+    <div class="stat"><div class="k">${m} 结余</div><div class="v">¥${fmt(inc-exp)}</div></div>
+    <div class="stat"><div class="k">累计结余</div><div class="v">¥${fmt(totalNet())}</div></div>`;
+  renderTrend();
+  renderPie(cur);
+  renderPieByConsCat(cur);
+  renderBudgetAlert(cur);
+}
+function totalNet(){ let s=0; state.transactions.forEach(t=> s+= t.type==="income"?t.amount:-t.amount); return s; }
+function renderTrend(){
+  const months=lastNMonths(6);
+  const inc=months.map(m=> txInMonth(m).filter(t=>t.type==="income").reduce((s,t)=>s+t.amount,0));
+  const exp=months.map(m=> txInMonth(m).filter(t=>t.type==="expense").reduce((s,t)=>s+t.amount,0));
+  const W=560,H=240,pad=42; const maxV=Math.max(1,...inc,...exp);
+  const x=i=> pad + i*( (W-pad-10)/(months.length-1) );
+  const y=v=> H-pad - (v/maxV)*(H-pad-20);
+  const line=(arr)=> arr.map((v,i)=> (i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join(" ");
+  const dots=(arr,color)=> arr.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.5" fill="${color}"><title>${months[i]}: ¥${fmt(v)}</title></circle>`).join("");
+  const xlabels=months.map((mm,i)=>`<text x="${x(i).toFixed(1)}" y="${H-14}" font-size="11" fill="#6b7280" text-anchor="middle">${mm.slice(2)}</text>`).join("");
+  const ylabels=[0,maxV/2,maxV].map(v=>`<text x="${pad-8}" y="${y(v).toFixed(1)+4}" font-size="10" fill="#9ca3af" text-anchor="end">${fmt(v)}</text>`).join("");
+  const grid=[0,0.5,1].map(f=>`<line x1="${pad}" y1="${y(maxV*f).toFixed(1)}" x2="${W-10}" y2="${y(maxV*f).toFixed(1)}" stroke="#eceef2"/>`).join("");
+  $("trendChart").innerHTML = `
+    <div style="display:flex;gap:18px;margin-bottom:6px;font-size:13px">
+      <span><span class="dot" style="background:var(--income)"></span> 收入</span>
+      <span><span class="dot" style="background:var(--expense)"></span> 支出</span>
+    </div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px">
+      ${grid}${ylabels}
+      <path d="${line(inc)}" stroke="#16a34a" fill="none" stroke-width="2.5" />
+      <path d="${line(exp)}" stroke="#ef4444" fill="none" stroke-width="2.5" />
+      ${dots(inc,"#16a34a")}${dots(exp,"#ef4444")}
+      ${xlabels}
+    </svg>`;
+}
+function renderPie(cur){
+  const byCat={}; cur.filter(t=>t.type==="expense").forEach(t=> byCat[t.category]=(byCat[t.category]||0)+t.amount);
+  const data=Object.entries(byCat).map(([label,value],i)=>({label,value,color:PALETTE[i%PALETTE.length]})).sort((a,b)=>b.value-a.value);
+  const total=data.reduce((s,d)=>s+d.value,0);
+  if(total<=0){ $("pieChart").innerHTML='<div class="empty">本月暂无支出</div>'; return; }
+  const cx=105,cy=105,r=95; let ang=0, paths="";
+  data.forEach(d=>{
+    const f=d.value/total, a0=ang, a1=ang+f*2*Math.PI; ang=a1;
+    const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    const large=f>0.5?1:0;
+    paths+=`<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${large} 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${d.color}"><title>${d.label}: ¥${fmt(d.value)} (${(f*100).toFixed(1)}%)</title></path>`;
+  });
+  const legend=data.map(d=>`<div class="legend-item"><span class="dot" style="background:${d.color}"></span>${d.label} ¥${fmt(d.value)} <span class="muted">(${(d.value/total*100).toFixed(1)}%)</span></div>`).join("");
+  $("pieChart").innerHTML=`<div class="chart-row"><svg viewBox="0 0 210 210" width="210" height="210">${paths}<circle cx="${cx}" cy="${cy}" r="46" fill="#fff"/><text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="12" fill="#6b7280">总支出</text><text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2430">¥${fmt(total)}</text></svg><div class="legend">${legend}</div></div>`;
+}
+function renderPieByConsCat(cur){
+  // 按「消费分类」统计本月支出；消费分类为空的统一归入「未分类」
+  const byCat={}; cur.filter(t=>t.type==="expense").forEach(t=>{ const c=t.consumptionCat||"未分类"; byCat[c]=(byCat[c]||0)+t.amount; });
+  const data=Object.entries(byCat).map(([label,value],i)=>({label,value,color:PALETTE[i%PALETTE.length]})).sort((a,b)=>b.value-a.value);
+  const total=data.reduce((s,d)=>s+d.value,0);
+  if(total<=0){ $("pieChartConsCat").innerHTML='<div class="empty">本月暂无支出</div>'; return; }
+  const cx=105,cy=105,r=95; let ang=0, paths="";
+  data.forEach(d=>{
+    const f=d.value/total, a0=ang, a1=ang+f*2*Math.PI; ang=a1;
+    const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    const large=f>0.5?1:0;
+    paths+=`<path d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${large} 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${d.color}"><title>${d.label}: ¥${fmt(d.value)} (${(f*100).toFixed(1)}%)</title></path>`;
+  });
+  const legend=data.map(d=>`<div class="legend-item"><span class="dot" style="background:${d.color}"></span>${d.label} ¥${fmt(d.value)} <span class="muted">(${(d.value/total*100).toFixed(1)}%)</span></div>`).join("");
+  $("pieChartConsCat").innerHTML=`<div class="chart-row"><svg viewBox="0 0 210 210" width="210" height="210">${paths}<circle cx="${cx}" cy="${cy}" r="46" fill="#fff"/><text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="12" fill="#6b7280">总支出</text><text x="${cx}" y="${cy+14}" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2430">¥${fmt(total)}</text></svg><div class="legend">${legend}</div></div>`;
+}
+function renderBudgetAlert(cur){
+  const limits=Object.entries(state.budgets).filter(([,v])=>v>0);
+  if(!limits.length){ $("budgetAlert").innerHTML='<div class="empty">尚未设置预算，去「预算」页设置</div>'; return; }
+  const spent={}; cur.filter(t=>t.type==="expense").forEach(t=>{ const c=t.consumptionCat||"未分类"; spent[c]=(spent[c]||0)+t.amount; });
+  const rows=limits.map(([cat,limit])=>{
+    const s=spent[cat]||0, pct=limit? s/limit:0;
+    const over=pct>1, warn=pct>0.8;
+    const color= over?"var(--danger)": warn?"var(--warn)":"var(--income)";
+    return `<div class="bud-row" style="grid-template-columns:1fr">
+      <div style="display:flex;justify-content:space-between"><span class="name">${cat}</span><span class="${over?'over':''}">¥${fmt(s)} / ¥${fmt(limit)}</span></div>
+      <div class="bar"><span style="width:${Math.min(100,pct*100).toFixed(0)}%;background:${color}"></span></div>
+      <div class="bud-meta">${over?`已超支 ¥${fmt(s-limit)}`:`剩余 ¥${fmt(limit-s)}`} · ${(pct*100).toFixed(0)}%${warn?' ⚠':''}</div>
+    </div>`;
+  }).join("");
+  $("budgetAlert").innerHTML=rows;
+}
+
+/* ---------- 预算 ---------- */
+function renderBudget(){
+  const wrap=$("budgetList");
+  // 预算的分类维度与「消费分类」统一：动态取全部消费分类（含已设预算但当前无数据的）
+  const cats=allConsCats();
+  const saved=Object.keys(state.budgets||{}).filter(c=>state.budgets[c]>0);
+  const ordered=[...new Set([...saved, ...cats])];
+  if(!ordered.length){ wrap.innerHTML='<div class="empty">还没有消费分类。先在「明细」里给记录设置消费分类，或去「明细」筛选区管理消费分类。</div>'; return; }
+  wrap.innerHTML = ordered.map(c=>{
+    const v=state.budgets[c]||"";
+    return `<div class="bud-row">
+      <div class="name">${c}</div>
+      <label class="fld" style="flex:1"><span>月度限额（元）</span><input type="number" min="0" step="0.01" data-cat="${c}" value="${v}" placeholder="不限制留空" /></label>
+      <div></div>
+    </div>`;
+  }).join("");
+}
+$("budgetSave").addEventListener("click", ()=>{
+  const b={}; document.querySelectorAll("#budgetList input[data-cat]").forEach(inp=>{ const v=parseFloat(inp.value); if(v>0) b[inp.dataset.cat]=v; });
+  state.budgets=b; save(); toast("预算已保存 ✓");
+});
+$("budgetReset").addEventListener("click", ()=>{ if(confirm("清空所有预算设置？")){ state.budgets={}; save(); renderBudget(); toast("已清空"); } });
+
+/* ---------- 导出 ---------- */
+function toRows(){
+  return state.transactions.map(t=>({日期:t.date, 时间:t.time||"", "收/支":TYPE_LABEL[t.type], 交易对象:t.counterparty||"", 金额:t.amount, 备注:t.note||"", 类别:t.category, 消费分类:t.consumptionCat||""}));
+}
+function downloadBlob(content, name, type){
+  const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url);
+}
+function csvCell(v){ v=String(v??""); return /[",\r\n]/.test(v)? '"'+v.replace(/"/g,'""')+'"' : v; }
+function rowsToCsv(rows){
+  const head=["日期","时间","类别","交易对象","金额","备注","类别","消费分类"];
+  const lines=[head.join(",")];
+  rows.forEach(r=> lines.push([r.日期,r.时间,r["收/支"],r.交易对象,r.金额,r.备注,r.类别,r.消费分类].map(csvCell).join(",")));
+  return "﻿"+lines.join("\r\n");
+}
+$("expCsv").addEventListener("click", ()=>{
+  if(!state.transactions.length){ toast("还没有数据"); return; }
+  downloadBlob(rowsToCsv(toRows()), "记账明细.csv", "text/csv;charset=utf-8");
+  toast("已导出 CSV");
+});
+$("expXlsx").addEventListener("click", ()=>{
+  if(!state.transactions.length){ toast("还没有数据"); return; }
+  if(typeof XLSX==="undefined"){ toast("Excel 库未加载，已改为导出 CSV"); downloadBlob(rowsToCsv(toRows()),"记账明细.csv","text/csv;charset=utf-8"); return; }
+  const ws=XLSX.utils.json_to_sheet(toRows());
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "记账明细");
+  XLSX.writeFile(wb, "记账明细.xlsx");
+  toast("已导出 Excel");
+});
+$("tplCsv").addEventListener("click", ()=>{
+  const head=["日期","时间","类别","交易对象","金额","备注","类别","消费分类"];
+  const sample=[
+    ["2025-08-19","19:36","支出","美团",-25.91,"午饭","餐饮",""],
+    ["2025-08-20","10:04","收入","工资-某公司",8000,"","工资",""],
+    ["2025-08-21","12:02","支出","luckin coffee",-9.9,"","餐饮",""]
+  ];
+  if(typeof XLSX!=="undefined"){
+    const ws=XLSX.utils.aoa_to_sheet([head,...sample]);
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "导入模板");
+    XLSX.writeFile(wb, "记账导入模板.xlsx");
+    toast("模板已下载（微信账单格式 .xlsx）");
+  } else {
+    const lines=[head.join(",")].concat(sample.map(r=>r.map(csvCell).join(",")));
+    downloadBlob("﻿"+lines.join("\r\n"), "记账导入模板.csv", "text/csv;charset=utf-8");
+    toast("Excel 库未加载，已改为下载 CSV 模板");
+  }
+});
+$("loadSample").addEventListener("click", ()=>{
+  if(state.transactions.length && !confirm("将向现有数据追加示例，继续？")) return;
+  const today=new Date();
+  const sample=[];
+  const exp=[["餐饮","美团",32],["交通","滴滴",12],["购物","淘宝",259],["娱乐","Steam",88],["居住","房东-王",1500],["餐饮","麦当劳",45],["医疗","药房",120],["人情","同学-小李",600],["通讯","中国移动",99],["其他","杂项",30]];
+  const inc=[["工资","公司-薪资",12000],["兼职","外包项目",1500]];
+  for(let i=0;i<exp.length;i++){ const d=new Date(today); d.setDate(d.getDate()-i*3); sample.push({id:uid(),date:d.toISOString().slice(0,10),type:"expense",category:exp[i][0],counterparty:exp[i][1],amount:exp[i][2],consumptionCat:"",note:""}); }
+  inc.forEach(c=>{ const d=new Date(today); d.setDate(d.getDate()-5); sample.push({id:uid(),date:d.toISOString().slice(0,10),type:"income",category:c[0],counterparty:c[1],amount:c[2],consumptionCat:"",note:""}); });
+  state.transactions.push(...sample); save(); toast("已填充示例数据");
+});
+$("clearAll").addEventListener("click", ()=>{
+  if(confirm("确定清空全部记账数据？此操作不可恢复（预算保留）。")){ state.transactions=[]; save(); toast("已清空"); }
+});
+$("clearCache").addEventListener("click", ()=>{
+  if(confirm("确定清除浏览器缓存？将清空本应用在本浏览器存储的全部数据（记账明细 + 预算），此操作不可恢复。")){
+    try{ localStorage.removeItem(LS_TX); localStorage.removeItem(LS_BUD); }catch(_){}
+    state.transactions=[]; state.budgets={};
+    if(document.querySelector("#tabs button.active")){
+      renderList(); renderBudget(); renderDash();
+    }
+    toast("已清除浏览器缓存 ✓");
+  }
+});
+
+/* ---------- 导入 ---------- */
+const FIELDS=["日期","时间","类型","交易对象","金额","备注","消费分类","分类"];
+const SYN={
+  日期:["日期","date","记账日期","交易日期"],
+  时间:["时间","time","时刻","时分","几点"],
+  类型:["类型","收支","收/支","方向","type","类别方向","收付款方向"],
+  交易对象:["交易对象","商户","对方","对象","counterparty","payee","收款方","付款方","商家"],
+  金额:["金额","amount","数额","价钱","实付"],
+  备注:["备注","说明","note","remark","摘要","描述","状态","备注说明"],
+  分类:["分类","类别","category","项目","科目"],
+  消费分类:["消费分类","细分","子类","subcategory"]
+};
+function detectField(header){
+  const h=String(header).trim().toLowerCase();
+  for(const f of FIELDS){ if(SYN[f].some(k=> h.includes(k.toLowerCase()))) return f; }
+  return "";
+}
+$("importFile").addEventListener("change", e=>{
+  const file=e.target.files[0]; if(!file) return; handleFile(file); e.target.value="";
+});
+const dropEl=document.querySelector(".drop");
+["dragover","dragenter"].forEach(ev=>dropEl.addEventListener(ev,e=>{e.preventDefault();dropEl.querySelector("label").style.borderColor="var(--brand)";}));
+["dragleave","drop"].forEach(ev=>dropEl.addEventListener(ev,e=>{e.preventDefault();dropEl.querySelector("label").style.borderColor="";}));
+dropEl.addEventListener("drop", e=>{ const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+
+function handleFile(file){
+  const isCsv=/\.csv$/i.test(file.name);
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      if(isCsv){
+        const bytes=new Uint8Array(ev.target.result);
+        let text; try{ text=new TextDecoder("utf-8",{fatal:true}).decode(bytes); }catch(_){ text=new TextDecoder("gbk").decode(bytes); }
+        showMapping(csvToRows(text));
+      } else {
+        if(typeof XLSX==="undefined"){ toast("Excel 解析库未加载（可能离线），请用 CSV 文件"); return; }
+        const wb=XLSX.read(ev.target.result,{type:"array"});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        showMapping(XLSX.utils.sheet_to_json(ws,{header:1,defval:""}));
+      }
+    }catch(err){ toast("解析失败："+err.message); }
+  };
+  if(isCsv) reader.readAsArrayBuffer(file); else reader.readAsArrayBuffer(file);
+}
+function csvToRows(text){
+  text=text.replace(/^﻿/,""); // 去除 UTF-8 BOM，避免首列表头变成“﻿日期”
+  const rows=[]; let row=[], field="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else q=false; }
+      else field+=c;
+    } else {
+      if(c==='"') q=true;
+      else if(c===","){ row.push(field); field=""; }
+      else if(c==="\r"){}
+      else if(c==="\n"){ row.push(field); rows.push(row); row=[]; field=""; }
+      else field+=c;
+    }
+  }
+  if(field.length||row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r=>r.some(c=>String(c).trim()!==""));
+}
+function colLooksLikeType(i, rows){
+  const re=/支出|收入|收\/支|expense|income/i;
+  for(let r=1;r<Math.min(rows.length,4);r++){
+    if(re.test(String(rows[r][i]||"").trim())) return true;
+  }
+  return false;
+}
+function showMapping(rows){
+  if(!rows.length||rows.length<2){ toast("文件为空或没有数据行"); return; }
+  // 兜底：把所有行补齐到相同宽度，防止读取器把末尾空列(如“消费分类”)丢弃导致列数变少
+  const w=Math.max(1,...rows.map(r=>r?r.length:0));
+  rows=rows.map(r=>{ const c=(r||[]).slice(); while(c.length<w) c.push(""); return c; });
+  mapRows=rows;
+  const headers=rows[0].map((h,i)=> (h==null||h==="")?("列"+(i+1)):String(h).replace(/^﻿/,"").trim());
+  // 贪心唯一映射：每个字段只绑定第一个尚未占用的命中表头
+  const assigned=new Set(); const auto={};
+  for(const f of FIELDS){
+    for(let i=0;i<headers.length;i++){
+      if(assigned.has(i)) continue;
+      if(detectField(headers[i])===f){ auto[f]=i; assigned.add(i); break; }
+    }
+  }
+  // 同名“类别”列消歧：微信账单里 C 列“类别”是收/支，G 列“类别”是消费分类；按样本值判定
+  const catIdx=headers.map((h,i)=>[String(h).trim(),i]).filter(([h])=>h==="类别").map(([,i])=>i);
+  if(catIdx.length>=2){
+    let typeCol=catIdx.find(i=>colLooksLikeType(i,rows));
+    if(typeCol===undefined) typeCol=catIdx[0];
+    const catCol=catIdx.find(i=>i!==typeCol);
+    for(const f in auto){ if(catIdx.includes(auto[f])) delete auto[f]; }
+    catIdx.forEach(i=>assigned.delete(i));
+    if(typeCol!==undefined){ auto["类型"]=typeCol; assigned.add(typeCol); }
+    if(catCol!==undefined){ auto["分类"]=catCol; assigned.add(catCol); }
+  }
+  const colField={}; for(const f in auto) colField[auto[f]]=f;
+  // 左侧为表格的每一列（与模板列数一致，应为 7），右侧为每个列选择对应的应用字段
+  $("mapGrid").innerHTML = headers.map((h,i)=>{
+    const opts=['<option value="">（不导入）</option>']
+      .concat(FIELDS.map(f=>`<option value="${f}" ${colField[i]===f?"selected":""}>${f}</option>`)).join("");
+    return `<b>${h}</b><select data-col="${i}">${opts}</select>`;
+  }).join("");
+  const prev=rows.slice(1,4).map(r=> r.join(" | ")).join("<br>");
+  $("mapCount").textContent=`已识别 ${headers.length} 列，左侧就是您表格里的每一列（日期、时间、类别、交易对象、金额、备注、类别、消费分类），右侧为每个列选择对应的应用字段（已自动预选）。注意：微信账单里有两列都叫「类别」——第 3 列是收支方向（支出/收入），第 7 列是消费分类（餐饮/转账等），已自动区分；如自动识别有误可在右侧手动调整。仅「日期、金额」两列必须对应；无「类别（方向）」列时按金额正负自动判定收入/支出，无「类别（消费分类）」默认「其他」。`;
+  $("mapPreview").innerHTML="预览（前 3 行）：<br>"+prev;
+  $("mapMask").classList.add("show");
+}
+$("mapMode").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; mapMode=b.dataset.mode; document.querySelectorAll("#mapMode button").forEach(x=>x.classList.toggle("on",x===b)); });
+$("map_cancel").addEventListener("click", ()=>$("mapMask").classList.remove("show"));
+function normalizeDate(s){
+  if(s instanceof Date){ return s.getFullYear()+"-"+String(s.getMonth()+1).padStart(2,"0")+"-"+String(s.getDate()).padStart(2,"0"); }
+  s=String(s==null?"":s).trim();
+  if(!s) return "";
+  // Excel 日期序列号（如 45888 表示 2025-08-19）：纯数字且在合理范围内
+  if(/^\d{4,6}$/.test(s)){
+    const n=parseInt(s,10);
+    if(n>20000 && n<80000){
+      const d=new Date((n-25569)*86400000);
+      if(!isNaN(d)) return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
+    }
+  }
+  if(/^\d{4}[-/.]\d{1,2}[-/.]\d{1,2}/.test(s)) return s.slice(0,10).replace(/\//g,"-").replace(/\./g,"-");
+  const m=s.match(/(\d{4})\D(\d{1,2})\D(\d{1,2})/); if(m) return m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0");
+  const d=new Date(s); if(!isNaN(d) && d.getFullYear()>1900 && d.getFullYear()<3000) return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
+  return "";
+}
+function parseAmount(s){
+  let v=String(s).replace(/[¥￥,\s]/g,"");
+  if(v.startsWith("(")&&v.endsWith(")")) v="-"+v.slice(1,-1);
+  const n=parseFloat(v); return isNaN(n)?NaN:n;
+}
+$("map_ok").addEventListener("click", ()=>{
+  const map={};
+  document.querySelectorAll("#mapGrid select[data-col]").forEach(s=>{ if(s.value) map[s.value]=parseInt(s.dataset.col); });
+  if(map["日期"]==null||map["金额"]==null){ toast("请把「日期」「金额」两列对应到相应字段"); return; }
+  const get=(r,f)=> map[f]!=null ? r[map[f]] : "";
+  const newTx=[]; let skip=0;
+  for(let i=1;i<mapRows.length;i++){
+    const r=mapRows[i];
+    const date=normalizeDate(get(r,"日期"));
+    let amount=parseAmount(get(r,"金额"));
+    const catRaw=String(get(r,"分类")||"").trim();
+    const cat=catRaw||"其他";
+    const cp=String(get(r,"交易对象")||"").trim();
+    const consCat=String(get(r,"消费分类")||"").trim();
+    const noteRaw=String(get(r,"备注")||"").trim();
+    const timeRaw=String(get(r,"时间")||"").trim();
+    const tcell=String(get(r,"类型")||"").trim().toLowerCase();
+    let type;
+    if(/支出|expense|ex|负|贷|out/.test(tcell)) type="expense";
+    else if(/收入|income|in|正|工资|奖金/.test(tcell)) type="income";
+    else { if(amount<0){ type="expense"; amount=Math.abs(amount); } else type="income"; }
+    if(!date||!(amount>0)){ skip++; continue; }
+    newTx.push({ id:uid(), date, type, category:cat, amount, counterparty:cp, consumptionCat:consCat, note:noteRaw, time:timeRaw });
+  }
+  if(mapMode==="replace") state.transactions=newTx; else state.transactions.push(...newTx);
+  save();
+  $("mapMask").classList.remove("show");
+  toast(`导入成功 ${newTx.length} 条${skip?`，跳过 ${skip} 条无效行`:""}`);
+  if(document.querySelector("#tabs button.active").dataset.tab==="list") renderList();
+});
+
+/* ---------- GitHub 同步（移植自参考实现，适配记账本 localStorage 数据） ---------- */
+const DEFAULT_GH = {
+  user: 'maidang0706',
+  repo: 'jizhang1',
+  token: '',
+  filePath: '记账本.html',   // 跨设备统一读写同一文件
+  branch: 'main',
+  commitMsg: 'Update 记账本.html'
+};
+function loadGitHubSettings(){
+  try{
+    let saved=localStorage.getItem('jb_github_settings');
+    if(!saved){ saved=JSON.stringify(DEFAULT_GH); localStorage.setItem('jb_github_settings', saved); }
+  }catch(_){}
+}
+function getGitHubSettings(){
+  let s;
+  try{ s=JSON.parse(localStorage.getItem('jb_github_settings')); }catch(_){}
+  s = s ? Object.assign({}, DEFAULT_GH, s) : Object.assign({}, DEFAULT_GH);
+  // 强制固定 user/repo/filePath/commitMsg 与 DEFAULT_GH 一致（仓库已切换为 maidang0706/jizhang1），避免双通道分裂
+  s.user=DEFAULT_GH.user; s.repo=DEFAULT_GH.repo; s.filePath=DEFAULT_GH.filePath; s.commitMsg=DEFAULT_GH.commitMsg;
+  if(!s.branch) s.branch='main';
+  return s;
+}
+function updateSyncStatus(status, text){
+  const el=document.getElementById('syncStatus');
+  const txt=document.getElementById('syncText');
+  if(!el) return;
+  el.className='sync-status '+status;
+  const s=getGitHubSettings();
+  txt.textContent=(text||(status==='idle'?'已配置':status==='syncing'?'同步中...':'同步失败'))+' · 分支:'+(s.branch||'main')+' · 文件:'+(s.filePath||'?');
+}
+// 把当前 state 序列化进页面内嵌脚本，供上传 GitHub 时一并提交
+function persistEmbedded(){
+  const node=document.getElementById('jbData');
+  if(!node) return;
+  const payload={ transactions:state.transactions, budgets:state.budgets, consCats:state.consCats||[] };
+  // 转义 </ 防止破坏 script 标签；记录脏标记
+  node.textContent='var jbData = '+JSON.stringify(payload).replace(/<\//g,'<\\/')+';';
+  try{ localStorage.setItem('jb_dirty','1'); }catch(_){}
+}
+function markDirty(){ try{ localStorage.setItem('jb_dirty','1'); }catch(_){} }
+function isDirty(){ try{ return localStorage.getItem('jb_dirty')==='1'; }catch(_){ return false; } }
+function clearDirty(){ try{ localStorage.removeItem('jb_dirty'); }catch(_){} }
+
+// 解析实际可用分支：优先用设置的分支；不存在则回退到仓库默认分支（main/master 自适应）
+async function ghApi(url, opts, headers){
+  const r=await fetch(url, Object.assign({headers}, opts||{}));
+  let body={}; try{ body=await r.json(); }catch(_){}
+  return {ok:r.ok, status:r.status, body};
+}
+async function resolveBranch(base, headers, preferred){
+  // 拿仓库默认分支
+  const repo=await ghApi(base, {}, headers);
+  let defBranch='main';
+  if(repo.ok && repo.body.default_branch) defBranch=repo.body.default_branch;
+  // 优先尝试用户指定的分支
+  const want=preferred||defBranch;
+  const ref=await ghApi(base+'/git/refs/heads/'+encodeURIComponent(want), {}, headers);
+  if(ref.ok) return {branch:want, refData:ref.body, empty:false};
+  // 指定分支不存在，回退默认分支
+  const def=await ghApi(base+'/git/refs/heads/'+encodeURIComponent(defBranch), {}, headers);
+  if(def.ok) return {branch:defBranch, refData:def.body, empty:false};
+  // 连默认分支都没有（彻底空仓库，无任何 commit）
+  return {branch:defBranch, refData:null, empty:true};
+}
+
+async function syncToGitHub(){
+  const settings=getGitHubSettings();
+  let token=(document.getElementById('ghToken').value||'').trim() || settings.token;
+  if(!token){
+    token=prompt('请输入 GitHub Token（需含 repo 权限）：');
+    if(!token) return;
+    token=token.trim();
+  }
+  settings.token=token;
+  try{ localStorage.setItem('jb_github_settings', JSON.stringify(settings)); }catch(_){}
+  document.getElementById('ghToken').value=token;
+  if(!settings.user||!settings.repo){ toast('配置错误'); return; }
+  updateSyncStatus('syncing','同步中...');
+  const btn=document.getElementById('syncBtn'); btn.disabled=true; btn.textContent='⏳ 同步中...';
+  try{
+    persistEmbedded();                       // 确保内嵌数据最新
+    const htmlContent=document.documentElement.outerHTML;
+    const base='https://api.github.com/repos/'+encodeURIComponent(settings.user)+'/'+encodeURIComponent(settings.repo);
+    const headers={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    // 诊断：检查 token 权限范围 / 有效性
+    try{
+      const meResp=await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+      const scopes=meResp.headers.get('X-OAuth-Scopes')||'';
+      if(meResp.ok && !/(^|,\s*)(repo|public_repo)(,|$)/.test(scopes)){
+        toast('⚠️ Token 缺少 repo 写权限（当前: '+(scopes||'无')+'），请重新生成带 repo 权限的 Token','error');
+      }else if(!meResp.ok){
+        throw new Error('Token 无效或已过期（HTTP '+meResp.status+'），请重新粘贴有效的 GitHub Token');
+      }
+    }catch(e){ if(/Token 无效/.test(e.message)) throw e; }
+
+    // 自适应分支（main/master），空仓库也能正确解析出默认分支名
+    const br=await resolveBranch(base, headers, settings.branch);
+    const branch=br.branch;
+    const base64Content=btoa(unescape(encodeURIComponent(htmlContent)));
+    const utf8Bytes=new TextEncoder().encode(htmlContent);
+
+    // 主路径：Contents API。它能自动创建首个 commit，天然兼容「空仓库（0 commit）」场景。
+    // 限制：单文件 ≤ 1MB（GitHub 硬性限制）。
+    let usedGitData=false;
+    if(utf8Bytes.length <= 1000000){
+      // 查询远端是否已有该文件（拿到 sha 才能“更新”，否则“新建”）
+      let sha=null;
+      const head=await ghApi(base+'/contents/'+encodeURIComponent(settings.filePath)+'?ref='+encodeURIComponent(branch),{},headers);
+      if(head.ok && head.body.sha) sha=head.body.sha;
+      else {
+        // 不带 ref 再试一次（某些仓库默认分支名与 settings.branch 不一致但文件存在）
+        const head2=await ghApi(base+'/contents/'+encodeURIComponent(settings.filePath),{},headers);
+        if(head2.ok && head2.body.sha) sha=head2.body.sha;
+      }
+      const body=JSON.stringify({message:settings.commitMsg, content:base64Content, branch:branch, ...(sha?{sha}:{})});
+      const put=await ghApi(base+'/contents/'+encodeURIComponent(settings.filePath),{method:'PUT',headers,body});
+      if(!put.ok){
+        // 423（已被另一个请求锁定）：稍后重试一次
+        if(put.status===409 || put.status===422 || put.status===423){
+          const retry=await ghApi(base+'/contents/'+encodeURIComponent(settings.filePath)+'?ref='+encodeURIComponent(branch),{},headers);
+          const s2=retry.ok? retry.body.sha : null;
+          const put2=await ghApi(base+'/contents/'+encodeURIComponent(settings.filePath),{method:'PUT',headers,body:JSON.stringify({message:settings.commitMsg, content:base64Content, branch:branch, ...(s2?{sha:s2}:{})})});
+          if(!put2.ok) throw new Error('上传内容失败('+put2.status+'): '+(put2.body.message||''));
+        } else {
+          throw new Error('上传内容失败('+put.status+'): '+(put.body.message||''));
+        }
+      }
+    } else {
+      // 兜底：>1MB 走 Git Data API（空仓库时先建初始 commit 再更新引用）
+      usedGitData=true;
+      const blob=await ghApi(base+'/git/blobs',{method:'POST',headers,body:JSON.stringify({content:base64Content,encoding:'base64'})});
+      if(!blob.ok) throw new Error('创建 blob 失败('+blob.status+'): '+(blob.body.message||''));
+      if(!br.empty){
+        const latestCommitSha=br.refData.object.sha;
+        const commit=await ghApi(base+'/git/commits/'+latestCommitSha,{},headers);
+        if(!commit.ok) throw new Error('获取 commit 失败('+commit.status+'): '+(commit.body.message||''));
+        const baseTreeSha=commit.body.tree.sha;
+        const tree=await ghApi(base+'/git/trees',{method:'POST',headers,body:JSON.stringify({base_tree:baseTreeSha,tree:[{path:settings.filePath,mode:'100644',type:'blob',sha:blob.body.sha}]})});
+        if(!tree.ok) throw new Error('创建 tree 失败('+tree.status+'): '+(tree.body.message||''));
+        const newCommit=await ghApi(base+'/git/commits',{method:'POST',headers,body:JSON.stringify({message:settings.commitMsg,tree:tree.body.sha,parents:[latestCommitSha]})});
+        if(!newCommit.ok) throw new Error('创建 commit 失败('+newCommit.status+'): '+(newCommit.body.message||''));
+        const upd=await ghApi(base+'/git/refs/heads/'+encodeURIComponent(branch),{method:'PATCH',headers,body:JSON.stringify({sha:newCommit.body.sha,force:false})});
+        if(!upd.ok) throw new Error('更新分支引用失败('+upd.status+'): '+(upd.body.message||''));
+      }else{
+        const emptyTree=await ghApi(base+'/git/trees',{method:'POST',headers,body:JSON.stringify({tree:[]})});
+        if(!emptyTree.ok) throw new Error('创建空 tree 失败('+emptyTree.status+'): '+(emptyTree.body.message||''));
+        const newCommit=await ghApi(base+'/git/commits',{method:'POST',headers,body:JSON.stringify({message:settings.commitMsg,tree:emptyTree.body.sha,parents:[]})});
+        if(!newCommit.ok) throw new Error('创建初始 commit 失败('+newCommit.status+'): '+(newCommit.body.message||''));
+        const mkRef=await ghApi(base+'/git/refs',{method:'POST',headers,body:JSON.stringify({ref:'refs/heads/'+branch,sha:newCommit.body.sha})});
+        if(!mkRef.ok) throw new Error('创建分支引用失败('+mkRef.status+'): '+(mkRef.body.message||''));
+      }
+    }
+    // 记住实际使用的分支，下次直接用
+    settings.branch=branch;
+    try{ localStorage.setItem('jb_github_settings', JSON.stringify(settings)); }catch(_){}
+    clearDirty();
+    updateSyncStatus('idle','已同步');
+    toast('✅ 同步成功！分支: '+branch+(usedGitData?'（大文件 Git Data 模式）':''));
+  }catch(e){
+    updateSyncStatus('error','同步失败');
+    // 针对常见错误给中文提示
+    let tip=e.message;
+    if(/401/.test(tip)) tip+=' ｜ Token 无效/过期，请重新粘贴';
+    else if(/403/.test(tip)) tip+=' ｜ 权限不足：Token 需含 repo 权限，且你对仓库要有写权限';
+    else if(/404/.test(tip)) tip+=' ｜ 仓库/分支不存在，请检查账号与仓库名';
+    else if(/empty/i.test(tip)) tip+=' ｜ 仓库为空时请用 Contents API 自动创建首个提交（本版已修复）';
+    if(/Failed to fetch|NetworkError|TypeError/i.test(tip)) tip+=' ｜ 可能是 CORS/网络受限：请勿用 file:// 双击打开，改用本地服务器（python3 -m http.server）或在线打开后再同步';
+    toast('❌ 同步失败: '+tip,'error');
+  }
+  btn.disabled=false; btn.textContent='🔄 同步到 GitHub';
+}
+
+// auto=true 时为打开时自动调用：404 静默跳过；本机有未同步改动且与远端不同则保留本地不覆盖
+async function downloadFromGitHub(auto){
+  const settings=getGitHubSettings();
+  if(!settings.user||!settings.repo){ if(!auto) toast('配置错误'); return; }
+  if(!auto){
+    updateSyncStatus('syncing','下载中...');
+    const btn=document.getElementById('downloadBtn'); btn.disabled=true; btn.textContent='⏳ 下载中...';
+  }
+  try{
+    const base='https://api.github.com/repos/'+encodeURIComponent(settings.user)+'/'+encodeURIComponent(settings.repo);
+    const headers={'Accept':'application/vnd.github.v3+json'};
+    if(settings.token) headers['Authorization']='token '+settings.token;
+    // 自适应分支（main/master），空仓库则无文件直接返回
+    const br=await resolveBranch(base, headers, settings.branch);
+    if(br.empty){ if(auto) return; if(!auto){ updateSyncStatus('warn','仓库为空'); toast('仓库还没有任何提交，请先「🔄 同步到 GitHub」上传','info'); } return; }
+    let resp1=await fetch(base+'/contents/'+encodeURIComponent(settings.filePath)+'?ref='+encodeURIComponent(br.branch),{headers});
+    if(!resp1.ok && resp1.status===404){
+      const r1b=await fetch(base+'/contents/'+encodeURIComponent(settings.filePath),{headers});
+      if(r1b.ok) resp1=r1b;
+    }
+    if(!resp1.ok){ if(auto&&resp1.status===404) return; if(!auto){ updateSyncStatus('error','下载失败'); toast('❌ 下载失败: HTTP '+resp1.status+(resp1.status===404?'（仓库中尚无 '+settings.filePath+'，请先同步上传）':''),'error'); } return; }
+    const fileInfo=await resp1.json();
+    if(!fileInfo.sha) throw new Error('未获取到文件 SHA');
+    const resp2=await fetch(base+'/git/blobs/'+fileInfo.sha,{headers});
+    if(!resp2.ok) throw new Error('获取文件内容失败 HTTP '+resp2.status);
+    const blobData=await resp2.json();
+    if(!blobData.content) throw new Error('blob 内容为空');
+    const htmlStr=decodeURIComponent(escape(atob(blobData.content.replace(/\s/g,''))));
+    if(!htmlStr||htmlStr.length<100) throw new Error('解码后内容为空或过小');
+    const m=htmlStr.match(/<script id="jbData">([\s\S]*?)<\/script>/);
+    if(!m){ if(!auto){ updateSyncStatus('error','下载失败'); toast('❌ 文件中未找到记账数据','error'); } return; }
+    const newData=new Function(m[1]+'\n; return jbData;')();
+    if(!newData || !Array.isArray(newData.transactions)) throw new Error('数据格式错误');
+    const _changed=JSON.stringify(newData.transactions)!==JSON.stringify(state.transactions)
+      || JSON.stringify(newData.budgets||{})!==JSON.stringify(state.budgets)
+      || JSON.stringify(newData.consCats||[])!==JSON.stringify(state.consCats||[]);
+    if(auto && isDirty() && _changed){
+      updateSyncStatus('warn','⚠️ 本地有未同步改动');
+      toast('⚠️ 本机有未同步改动，未自动覆盖。请先「🔄 同步到 GitHub」上传，或手动「📥 从 GitHub 下载」放弃本机改动','info');
+      return;
+    }
+    state.transactions=newData.transactions;
+    state.budgets=newData.budgets||{};
+    state.consCats=newData.consCats||[];
+    settings.branch=br.branch;
+    try{ localStorage.setItem('jb_github_settings', JSON.stringify(settings)); }catch(_){}
+    save(); clearDirty();
+    updateSyncStatus('idle','已同步');
+    if(document.querySelector("#tabs button.active")){
+      if(document.querySelector("#tabs button.active").dataset.tab==="list") renderList();
+      if(document.querySelector("#tabs button.active").dataset.tab==="dash") renderDash();
+      if(document.querySelector("#tabs button.active").dataset.tab==="budget") renderBudget();
+    }
+    if(!auto) toast('✅ 已从 GitHub 下载 '+newData.transactions.length+' 条（分支: '+br.branch+'）');
+    else if(_changed) toast('🔄 打开时已自动载入 GitHub 最新数据','info');
+  }catch(e){
+    if(!auto){
+      let tip=e.message;
+      if(/Failed to fetch|NetworkError|TypeError/i.test(tip)) tip+=' ｜ 可能是 CORS/网络受限：请勿用 file:// 双击打开，改用本地服务器或在线打开';
+      updateSyncStatus('error','下载失败'); toast('❌ 下载失败: '+tip,'error');
+    }
+  }
+  if(!auto){ const b=document.getElementById('downloadBtn'); b.disabled=false; b.textContent='📥 从 GitHub 下载'; }
+}
+
+// 绑定按钮
+$("syncBtn").addEventListener("click", syncToGitHub);
+$("downloadBtn").addEventListener("click", ()=>downloadFromGitHub(false));
+$("ghSaveToken").addEventListener("click", ()=>{
+  const t=document.getElementById("ghToken").value.trim();
+  const s=getGitHubSettings(); s.token=t;
+  try{ localStorage.setItem('jb_github_settings', JSON.stringify(s)); }catch(_){}
+  toast(t? '已保存 Token':'已清除 Token');
+});
+$("ghAuto").addEventListener("change", e=>{
+  const s=getGitHubSettings(); s.auto=e.target.checked;
+  try{ localStorage.setItem('jb_github_settings', JSON.stringify(s)); }catch(_){}
+});
+
+/* ---------- 启动 ---------- */
+loadGitHubSettings();
+updateSyncStatus('idle','已配置');
+(function(){
+  const s=getGitHubSettings();
+  document.getElementById('ghToken').value=s.token||'';
+  document.getElementById('ghAuto').checked=!!s.auto;
+  // 数据页打开时若勾选自动同步，则从 GitHub 拉取最新（带 dirty 保护）
+  if(s.auto){
+    document.querySelector('nav.tabs').addEventListener('click', function once(ev){
+      const b=ev.target.closest('button'); if(b && b.dataset.tab==='data'){ downloadFromGitHub(true); document.querySelector('nav.tabs').removeEventListener('click', once); }
+    });
+  }
+})();
+renderList();
+</script>
+<script id="jbData">var jbData = {"transactions":[{"id":"mt4ehaf5yelpl","date":"+046252-12","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给罗**","consumptionCat":"","note":"","time":"19:36"},{"id":"mt4ehaf58vumm","date":"+046252-12","type":"expense","category":"餐饮","amount":25.91,"counterparty":"美团","consumptionCat":"","note":"","time":"19:52"},{"id":"mt4ehaf5cbrgs","date":"+046252-12","type":"expense","category":"购物/便利店","amount":14.69,"counterparty":"新佳宜","consumptionCat":"","note":"","time":"18:07"},{"id":"mt4ehaf56ds8x","date":"+046252-12","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"15:55"},{"id":"mt4ehaf5z8nt4","date":"+046252-12","type":"expense","category":"餐饮","amount":20.7,"counterparty":"遇见小面","consumptionCat":"","note":"","time":"12:57"},{"id":"mt4ehaf5ragu4","date":"+046252-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"12:02"},{"id":"mt4ehaf5yx11z","date":"+046252-12","type":"expense","category":"转账转出","amount":770,"counterparty":"转账-转给海燕","consumptionCat":"","note":"","time":"10:35"},{"id":"mt4ehaf55weho","date":"+046252-12","type":"expense","category":"其他","amount":50,"counterparty":"广州市西城物业发展有限公司","consumptionCat":"","note":"","time":"10:04"},{"id":"mt4ehaf596fox","date":"+046252-12","type":"expense","category":"餐饮","amount":14,"counterparty":"陈记石磨肠粉","consumptionCat":"","note":"","time":"09:01"},{"id":"mt4ehaf5d0x0o","date":"+046252-12","type":"expense","category":"购物/便利店","amount":26,"counterparty":"省士多","consumptionCat":"","note":"","time":"08:57"},{"id":"mt4ehaf5hnfh3","date":"+046251-12","type":"expense","category":"旅行/票务","amount":369.88,"counterparty":"高德云信科技","consumptionCat":"","note":"","time":"16:24"},{"id":"mt4ehaf51rsa2","date":"+046251-12","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"","note":"","time":"16:17"},{"id":"mt4ehaf58cne4","date":"+046251-12","type":"expense","category":"餐饮","amount":7.8,"counterparty":"美团","consumptionCat":"","note":"","time":"16:02"},{"id":"mt4ehaf5zwpyr","date":"+046251-12","type":"income","category":"转账转入","amount":520,"counterparty":"转账-来自海燕","consumptionCat":"","note":"","time":"11:07"},{"id":"mt4ehaf5mtzde","date":"+046251-12","type":"expense","category":"交通停车","amount":10,"counterparty":"深圳市顺易通信息科技有限公司","consumptionCat":"","note":"","time":"10:55"},{"id":"mt4ehaf57k4r2","date":"+046251-12","type":"expense","category":"交通停车","amount":18.98,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"09:25"},{"id":"mt4ehaf5m5cwq","date":"+046250-12","type":"expense","category":"其他","amount":18,"counterparty":"中燃***","consumptionCat":"","note":"","time":"22:22"},{"id":"mt4ehaf5zw26w","date":"+046250-12","type":"expense","category":"交通停车","amount":12,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"20:20"},{"id":"mt4ehaf5ky55j","date":"+046250-12","type":"expense","category":"餐饮","amount":20,"counterparty":"扫二维码付款-给明*煲仔","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4ehaf5wzfqt","date":"+046250-12","type":"income","category":"红包","amount":2.7,"counterparty":"微信红包-来自沛县-老刘","consumptionCat":"","note":"","time":"17:08"},{"id":"mt4ehaf54iudb","date":"+046250-12","type":"income","category":"退款","amount":27,"counterparty":"美团平台商户-退款","consumptionCat":"","note":"","time":"17:12"},{"id":"mt4ehaf5tlmjh","date":"+046250-12","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"已全额退款","time":"16:11"},{"id":"mt4ehaf54xr2z","date":"+046250-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"16:05"},{"id":"mt4ehaf5pzn3w","date":"+046249-12","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟","consumptionCat":"","note":"","time":"22:21"},{"id":"mt4ehaf55suot","date":"+046249-12","type":"expense","category":"餐饮","amount":23.4,"counterparty":"美团","consumptionCat":"","note":"","time":"20:44"},{"id":"mt4ehaf561eox","date":"+046249-12","type":"expense","category":"餐饮","amount":10.7,"counterparty":"美团","consumptionCat":"","note":"","time":"19:39"},{"id":"mt4ehaf5ulv4l","date":"+046249-12","type":"expense","category":"餐饮","amount":31.9,"counterparty":"美团","consumptionCat":"","note":"","time":"18:35"},{"id":"mt4ehaf53kyga","date":"+046249-12","type":"expense","category":"餐饮","amount":15.7,"counterparty":"美团","consumptionCat":"","note":"","time":"18:31"},{"id":"mt4ehaf5uv077","date":"+046249-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"美团","consumptionCat":"","note":"","time":"18:14"},{"id":"mt4ehaf51q04e","date":"+046249-12","type":"expense","category":"交通停车","amount":10,"counterparty":"PP停车","consumptionCat":"","note":"","time":"15:16"},{"id":"mt4ehaf5tucj0","date":"+046249-12","type":"expense","category":"交通停车","amount":15,"counterparty":"深圳中心停车场","consumptionCat":"","note":"","time":"14:26"},{"id":"mt4ehaf5pgh5b","date":"+046249-12","type":"income","category":"退款","amount":9.9,"counterparty":"德克士-退款","consumptionCat":"","note":"","time":"14:22"},{"id":"mt4ehaf5oi5bf","date":"+046249-12","type":"expense","category":"餐饮","amount":15,"counterparty":"老碗会陕西手工面","consumptionCat":"","note":"","time":"13:48"},{"id":"mt4ehaf5x4o2q","date":"+046249-12","type":"expense","category":"餐饮","amount":32,"counterparty":"老碗会陕西手工面","consumptionCat":"","note":"","time":"13:03"},{"id":"mt4ehaf5qubn3","date":"+046248-12","type":"expense","category":"转账转出","amount":69,"counterparty":"转账-转给海燕","consumptionCat":"","note":"","time":"23:30"},{"id":"mt4ehaf5d84w6","date":"+046248-12","type":"expense","category":"交通停车","amount":24.68,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"22:51"},{"id":"mt4ehaf5vhk7t","date":"+046248-12","type":"expense","category":"餐饮","amount":17,"counterparty":"深圳市八合里餐饮管理有限公司","consumptionCat":"","note":"","time":"20:51"},{"id":"mt4ehaf5k6977","date":"+046248-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"19:10"},{"id":"mt4ehaf5myq68","date":"+046248-12","type":"income","category":"红包","amount":0.41,"counterparty":"微信红包-来自王**","consumptionCat":"","note":"","time":"19:19"},{"id":"mt4ehaf5t0iai","date":"+046248-12","type":"expense","category":"提现","amount":600,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4ehaf5qdekm","date":"+046248-12","type":"income","category":"转账转入","amount":600,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"19:20"},{"id":"mt4ehaf5qe6au","date":"+046248-12","type":"expense","category":"餐饮","amount":28,"counterparty":"惠州市大鹏餐饮管理有限公司","consumptionCat":"","note":"","time":"12:06"},{"id":"mt4ehaf5b5ky2","date":"+046248-12","type":"expense","category":"交通停车","amount":34.01,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"11:33"},{"id":"mt4ehaf5milhx","date":"+046248-12","type":"expense","category":"交通停车","amount":6,"counterparty":"深圳微诚达正大城车场","consumptionCat":"","note":"","time":"11:05"},{"id":"mt4ehaf50iaab","date":"+046248-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"10:52"},{"id":"mt4ehaf5ntqrs","date":"+046248-12","type":"expense","category":"餐饮","amount":91,"counterparty":"大米先生","consumptionCat":"","note":"","time":"10:08"},{"id":"mt4ehaf5nrpmt","date":"+046248-12","type":"income","category":"退款","amount":0.49,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:38"},{"id":"mt4ehaf5jmar4","date":"+046248-12","type":"expense","category":"交通停车","amount":20,"counterparty":"星星充电","consumptionCat":"","note":"已退款0.49","time":"17:29"},{"id":"mt4ehaf51aa5h","date":"+046248-12","type":"income","category":"退款","amount":20,"counterparty":"星星充电-退款","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4ehaf5emvm4","date":"+046248-12","type":"expense","category":"转账转出","amount":400,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"13:25"},{"id":"mt4ehaf5m3h25","date":"+046248-12","type":"expense","category":"交通停车","amount":5,"counterparty":"PP停车","consumptionCat":"","note":"","time":"12:19"},{"id":"mt4ehaf5cyprj","date":"+046248-12","type":"expense","category":"餐饮","amount":10,"counterparty":"德保餐厅","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4ehaf5o46ei","date":"+046248-12","type":"expense","category":"汽车服务","amount":19.9,"counterparty":"途虎养车","consumptionCat":"","note":"","time":"10:20"},{"id":"mt4ehaf5usyf0","date":"+046247-12","type":"expense","category":"转账转出","amount":100,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"22:31"},{"id":"mt4ehaf5h6wq3","date":"+046247-12","type":"income","category":"红包","amount":0.5,"counterparty":"微信红包-来自袁**小罗","consumptionCat":"","note":"","time":"21:08"},{"id":"mt4ehaf5rnskn","date":"+046247-12","type":"expense","category":"物流快递","amount":18,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4ehaf5vxnzd","date":"+046247-12","type":"expense","category":"物流快递","amount":13,"counterparty":"顺丰速运","consumptionCat":"","note":"","time":"12:55"},{"id":"mt4ehaf5j25ja","date":"+046247-12","type":"expense","category":"餐饮","amount":48.63,"counterparty":"珠海市众家好食点餐饮管理有限公司","consumptionCat":"","note":"","time":"12:34"},{"id":"mt4ehaf5q9u9c","date":"+046247-12","type":"income","category":"红包","amount":10.46,"counterparty":"微信红包-来自袁**小海","consumptionCat":"","note":"","time":"12:30"},{"id":"mt4ehaf5a8h7w","date":"+046247-12","type":"expense","category":"提现","amount":1290,"counterparty":"零钱提现-到招商银行(30**)","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4ehaf56r065","date":"+046247-12","type":"income","category":"转账转入","amount":1290,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"10:54"},{"id":"mt4ehaf5hy44n","date":"+046245-12","type":"expense","category":"餐饮","amount":6,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:52"},{"id":"mt4ehaf50u2f7","date":"+046245-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4ehaf55tdkp","date":"+046245-12","type":"expense","category":"交通停车","amount":15.4,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"08:25"},{"id":"mt4ehaf5gdo4l","date":"+046245-12","type":"expense","category":"购物/便利店","amount":6,"counterparty":"深圳市宝安区美惠便利店","consumptionCat":"","note":"","time":"07:21"},{"id":"mt4ehaf5kldog","date":"+046244-12","type":"expense","category":"交通停车","amount":11,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4ehaf5iwdh7","date":"+046244-12","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:05"},{"id":"mt4ehaf5ewzsm","date":"+046244-12","type":"expense","category":"提现","amount":630.96,"counterparty":"零钱提现-到招商银行(3026)","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4ehaf57wt3a","date":"+046244-12","type":"income","category":"转账转入","amount":630,"counterparty":"转账-来自弟新","consumptionCat":"","note":"","time":"11:17"},{"id":"mt4ehaf5f27wf","date":"+046244-12","type":"expense","category":"餐饮","amount":24.16,"counterparty":"美团","consumptionCat":"","note":"","time":"10:59"},{"id":"mt4ehaf5bgi7k","date":"+046244-12","type":"expense","category":"购物/便利店","amount":17,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"09:59"},{"id":"mt4ehaf5088nh","date":"+046244-12","type":"expense","category":"交通停车","amount":24.64,"counterparty":"深圳普通","consumptionCat":"","note":"","time":"09:43"},{"id":"mt4ehaf53q8eg","date":"+046243-12","type":"expense","category":"扫码付款","amount":4.5,"counterparty":"扫二维码付款-给汤**","consumptionCat":"","note":"","time":"20:18"},{"id":"mt4ehaf6le7hj","date":"+046243-12","type":"expense","category":"扫码付款","amount":22.5,"counterparty":"扫二维码付款-给罗**","consumptionCat":"","note":"","time":"20:16"},{"id":"mt4ehaf6sw97f","date":"+046243-12","type":"expense","category":"交通停车","amount":16,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"17:45"},{"id":"mt4ehaf6r520b","date":"+046243-12","type":"expense","category":"餐饮","amount":20,"counterparty":"明*煲仔饭","consumptionCat":"","note":"","time":"18:35"},{"id":"mt4ehaf6sxx2j","date":"+046243-12","type":"expense","category":"租车","amount":987.44,"counterparty":"北京神州汽车租赁有限公司","consumptionCat":"","note":"","time":"11:42"},{"id":"mt4ehaf6bz6k5","date":"+046243-12","type":"expense","category":"餐饮","amount":26.3,"counterparty":"美团","consumptionCat":"","note":"","time":"11:23"},{"id":"mt4ehaf6df3wq","date":"+046243-12","type":"expense","category":"购物/便利店","amount":20,"counterparty":"广东 ELEVEN 7","consumptionCat":"","note":"","time":"08:20"},{"id":"mt4ehaf6vhsmv","date":"+046243-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"07:56"},{"id":"mt4ehaf6lnoa3","date":"+046242-12","type":"expense","category":"餐饮","amount":4,"counterparty":"美团","consumptionCat":"","note":"","time":"21:32"},{"id":"mt4ehaf6emz2j","date":"+046242-12","type":"expense","category":"餐饮","amount":22,"counterparty":"川渝印象重庆小面（罗湖店）","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4ehaf6mfsen","date":"+046242-12","type":"expense","category":"公共交通","amount":8,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"21:09"},{"id":"mt4ehaf6nozmb","date":"+046242-12","type":"expense","category":"餐饮","amount":61,"counterparty":"肯德基","consumptionCat":"","note":"","time":"20:15"},{"id":"mt4ehaf6zy3td","date":"+046242-12","type":"expense","category":"餐饮","amount":24,"counterparty":"兰州***拉面","consumptionCat":"","note":"","time":"19:16"},{"id":"mt4ehaf6j3b1t","date":"+046242-12","type":"expense","category":"扫码付款","amount":17.5,"counterparty":"扫二维码付款-给力强","consumptionCat":"","note":"","time":"08:07"},{"id":"mt4ehaf6h2d71","date":"+046242-12","type":"expense","category":"购物/超市","amount":25,"counterparty":"西宁市城东区***超市","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4ehaf6l00gk","date":"+046242-12","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4ehaf6rnjuu","date":"+046242-12","type":"expense","category":"扫码付款","amount":1,"counterparty":"扫二维码付款-给Z","consumptionCat":"","note":"","time":"06:33"},{"id":"mt4ehaf6qn7ka","date":"+046242-12","type":"expense","category":"加油/能源","amount":406,"counterparty":"陆通能源有限责任公司","consumptionCat":"","note":"","time":"06:13"},{"id":"mt4ehaf6iomkz","date":"+046241-12","type":"expense","category":"转账转出","amount":200,"counterparty":"转账-转给弟新","consumptionCat":"","note":"","time":"19:05"},{"id":"mt4ehaf6dfjev","date":"+046241-12","type":"expense","category":"电商购物","amount":58.66,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"10:04"},{"id":"mt4ehaf63h7fy","date":"+046241-12","type":"expense","category":"电商购物","amount":79.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"已全额退款","time":"10:03"},{"id":"mt4ehaf6imdgg","date":"+046241-12","type":"expense","category":"电商购物","amount":52.9,"counterparty":"抖音电商商家","consumptionCat":"","note":"","time":"09:58"},{"id":"mt4ehaf6rokz0","date":"+046241-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"09:04"},{"id":"mt4ehaf6nd17j","date":"+046241-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"08:50"},{"id":"mt4ehaf6okd1u","date":"+046241-12","type":"expense","category":"景区门票","amount":10,"counterparty":"张掖丹霞景区管理股份有限公司","consumptionCat":"","note":"","time":"08:48"},{"id":"mt4ehaf6wwdet","date":"+046240-12","type":"expense","category":"扫码付款","amount":5,"counterparty":"扫二维码付款-给仁心**","consumptionCat":"","note":"","time":"20:26"},{"id":"mt4ehaf617ymb","date":"+046240-12","type":"expense","category":"转账转出","amount":2800,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"18:12"},{"id":"mt4ehaf6nl029","date":"+046240-12","type":"expense","category":"交通停车","amount":6,"counterparty":"玉门服务区","consumptionCat":"","note":"","time":"13:33"},{"id":"mt4ehaf6ejp8v","date":"+046240-12","type":"expense","category":"加油/能源","amount":540,"counterparty":"甘肃中油交通油品有限公司","consumptionCat":"","note":"","time":"12:56"},{"id":"mt4ehaf6qsrbp","date":"+046240-12","type":"expense","category":"餐饮","amount":13,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:55"},{"id":"mt4ehaf6ypc1f","date":"+046240-12","type":"expense","category":"扫码付款","amount":21,"counterparty":"扫二维码付款-给Lih","consumptionCat":"","note":"","time":"08:45"},{"id":"mt4ehaf6qubth","date":"+046240-12","type":"expense","category":"餐饮","amount":14,"counterparty":"敦煌市江海早餐店","consumptionCat":"","note":"","time":"08:28"},{"id":"mt4ehaf6ryxzi","date":"+046240-12","type":"expense","category":"扫码付款","amount":50,"counterparty":"扫二维码付款-给黑子","consumptionCat":"","note":"","time":"07:58"},{"id":"mt4ehaf6scy6o","date":"+046240-12","type":"expense","category":"扫码付款","amount":15,"counterparty":"扫二维码付款-给米粒儿","consumptionCat":"","note":"","time":"07:23"},{"id":"mt4ehaf6wh6f7","date":"+046240-12","type":"expense","category":"扫码付款","amount":10,"counterparty":"扫二维码付款-给代**爷爷","consumptionCat":"","note":"","time":"07:19"},{"id":"mt4ehaf6nvy5p","date":"+046240-12","type":"expense","category":"餐饮","amount":24,"counterparty":"敦煌市众发餐饮","consumptionCat":"","note":"","time":"06:44"},{"id":"mt4ehaf6sco71","date":"+046240-12","type":"expense","category":"餐饮","amount":20,"counterparty":"敦煌市***餐饮店","consumptionCat":"","note":"","time":"06:07"},{"id":"mt4ehaf6yt88z","date":"+046239-12","type":"expense","category":"餐饮","amount":55.7,"counterparty":"美团","consumptionCat":"","note":"","time":"18:45"},{"id":"mt4ehaf6axoe5","date":"+046239-12","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"14:48"},{"id":"mt4ehaf60qo1b","date":"+046239-12","type":"income","category":"退款","amount":9.9,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:18"},{"id":"mt4ehaf6jiuvx","date":"+046239-12","type":"income","category":"退款","amount":9.92,"counterparty":"luckin coffee瑞幸咖啡-退款","consumptionCat":"","note":"","time":"14:16"},{"id":"mt4ehaf643jnl","date":"+046239-12","type":"expense","category":"餐饮","amount":9.92,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:15"},{"id":"mt4ehaf6lphox","date":"+046239-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"已全额退款","time":"14:02"},{"id":"mt4ehaf6x39os","date":"+046239-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"13:58"},{"id":"mt4ehaf6daydc","date":"+046239-12","type":"expense","category":"餐饮","amount":16,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"13:24"},{"id":"mt4ehaf68rox5","date":"+046239-12","type":"income","category":"红包","amount":2.29,"counterparty":"微信红包-来自大风-周维龙","consumptionCat":"","note":"","time":"12:17"},{"id":"mt4ehaf6yonu4","date":"+046239-12","type":"expense","category":"扫码付款","amount":18,"counterparty":"扫二维码付款-给好物小铺夏夏","consumptionCat":"","note":"","time":"12:09"},{"id":"mt4ehaf6r9ook","date":"+046239-12","type":"expense","category":"餐饮","amount":20,"counterparty":"牛肉沙葱饼","consumptionCat":"","note":"","time":"11:35"},{"id":"mt4ehaf6zw8g9","date":"+046239-12","type":"expense","category":"餐饮","amount":5.79,"counterparty":"蜜雪冰城","consumptionCat":"","note":"","time":"10:32"},{"id":"mt4ehaf69ed1h","date":"+046239-12","type":"expense","category":"餐饮","amount":8,"counterparty":"揽山","consumptionCat":"","note":"","time":"08:35"},{"id":"mt4ehaf6svqe3","date":"+046239-12","type":"expense","category":"景区门票","amount":240,"counterparty":"黑独山景区","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4ehaf600jgi","date":"+046239-12","type":"expense","category":"扫码付款","amount":24,"counterparty":"扫二维码付款-给**萍**","consumptionCat":"","note":"","time":"07:39"},{"id":"mt4ehaf6lbed7","date":"+046238-12","type":"expense","category":"其他","amount":32,"counterparty":"黑风寨便民服务","consumptionCat":"","note":"","time":"18:28"},{"id":"mt4ehaf62z1gk","date":"+046238-12","type":"expense","category":"交通停车","amount":10,"counterparty":"大柴旦雅丹停车场","consumptionCat":"","note":"","time":"19:27"},{"id":"mt4ehaf62wqce","date":"+046238-12","type":"expense","category":"加油/能源","amount":422.28,"counterparty":"中国石化销售股份有限公司","consumptionCat":"","note":"","time":"17:12"},{"id":"mt4ehaf6w7vie","date":"+046238-12","type":"expense","category":"餐饮","amount":22.1,"counterparty":"美团平台商户","consumptionCat":"","note":"","time":"16:42"},{"id":"mt4ehaf6kvrvk","date":"+046237-12","type":"expense","category":"交通停车","amount":10,"counterparty":"P云停车平台","consumptionCat":"","note":"","time":"12:37"},{"id":"mt4ehaf6wwuh8","date":"+046237-12","type":"expense","category":"扫码付款","amount":30,"counterparty":"扫二维码付款-给lori李","consumptionCat":"","note":"","time":"11:56"},{"id":"mt4ehaf6u9p6k","date":"+046237-12","type":"expense","category":"景区门票","amount":10,"counterparty":"翡翠湖观光塔","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4ehaf6pdsvu","date":"+046237-12","type":"expense","category":"餐饮/其他","amount":18,"counterparty":"青甘***","consumptionCat":"","note":"","time":"10:28"},{"id":"mt4ehaf6w3e86","date":"+046237-12","type":"expense","category":"通讯","amount":29.94,"counterparty":"中国电信","consumptionCat":"","note":"","time":"08:30"},{"id":"mt4ehaf6fk6e2","date":"+046237-12","type":"expense","category":"餐饮","amount":30,"counterparty":"大柴旦伊香阁美食餐厅","consumptionCat":"","note":"","time":"07:34"},{"id":"mt4ehaf68ed0w","date":"+046236-12","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"22:33"},{"id":"mt4ehaf62e97q","date":"+046236-12","type":"income","category":"退款","amount":635.2,"counterparty":"高德云信科技-退款","consumptionCat":"","note":"","time":"22:11"},{"id":"mt4ehaf62zw8d","date":"+046236-12","type":"expense","category":"扫码付款","amount":7,"counterparty":"扫二维码付款-给宁宁","consumptionCat":"","note":"","time":"21:21"},{"id":"mt4ehaf6wqumq","date":"+046236-12","type":"expense","category":"扫码付款","amount":25,"counterparty":"扫二维码付款-给小丁烤羊肉","consumptionCat":"","note":"","time":"21:12"},{"id":"mt4ehaf6tmy20","date":"+046236-12","type":"expense","category":"交通/租车","amount":40,"counterparty":"格尔木**汽车运输服务有限公司","consumptionCat":"","note":"","time":"16:49"},{"id":"mt4ehaf6c80jg","date":"+046236-12","type":"expense","category":"旅行/票务","amount":794,"counterparty":"高德云信科技","consumptionCat":"","note":"已退款635.20","time":"15:43"},{"id":"mt4ehaf6qrd6f","date":"+046236-12","type":"expense","category":"住宿","amount":39,"counterparty":"清**酒店","consumptionCat":"","note":"","time":"10:30"},{"id":"mt4ehaf6vq31m","date":"+046235-12","type":"expense","category":"加油/能源","amount":471.15,"counterparty":"乌兰高速北加油站","consumptionCat":"","note":"","time":"20:25"},{"id":"mt4ehaf6dfmvq","date":"+046235-12","type":"expense","category":"景区门票","amount":10,"counterparty":"青海湖茶卡盐湖文化旅游发展有限公司","consumptionCat":"","note":"","time":"17:28"},{"id":"mt4ehaf65oal5","date":"+046235-12","type":"expense","category":"餐饮","amount":27,"counterparty":"美团","consumptionCat":"","note":"","time":"17:22"},{"id":"mt4ehaf6milp1","date":"+046235-12","type":"expense","category":"转账转出","amount":11300,"counterparty":"转账-转给何信","consumptionCat":"","note":"","time":"15:46"},{"id":"mt4ehaf6vg25t","date":"+046235-12","type":"expense","category":"景区门票","amount":120,"counterparty":"共和文旅产业投资公司","consumptionCat":"","note":"","time":"12:12"},{"id":"mt4ehaf623ue5","date":"+046235-12","type":"expense","category":"餐饮","amount":29.9,"counterparty":"肯德基","consumptionCat":"","note":"","time":"08:24"},{"id":"mt4ehaf6jlh2o","date":"+046235-12","type":"expense","category":"交通/机票","amount":35,"counterparty":"甘肃省民航机场集团有限公司","consumptionCat":"","note":"","time":"07:24"},{"id":"mt4ehaf6st4cn","date":"+046234-12","type":"expense","category":"餐饮","amount":9.9,"counterparty":"luckin coffee","consumptionCat":"","note":"","time":"22:42"},{"id":"mt4ehaf68d796","date":"+046234-12","type":"expense","category":"餐饮","amount":10,"counterparty":"遇见小面","consumptionCat":"","note":"","time":"19:02"},{"id":"mt4ehaf66z457","date":"+046234-12","type":"expense","category":"公共交通","amount":4,"counterparty":"深圳市地铁相关运营主体","consumptionCat":"","note":"","time":"18:55"},{"id":"mt4ehaf67spe5","date":"+046234-12","type":"expense","category":"转账转出","amount":30,"counterparty":"转账-转给武**","consumptionCat":"","note":"","time":"16:48"},{"id":"mt4ehaf6d3spp","date":"+046234-12","type":"expense","category":"餐饮","amount":23.9,"counterparty":"美团","consumptionCat":"","note":"","time":"10:35"}],"budgets":{},"consCats":["XM停车费","XM消费","个人零用","不统计"]};</script>
+
+
+</body></html>
