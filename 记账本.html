@@ -69,6 +69,7 @@
   .stat .v{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:.5px}
   .stat .v.income{color:var(--income)} .stat .v.expense{color:var(--expense)}
   .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .dash-bar{display:flex;justify-content:flex-end;gap:10px;margin:2px 0 14px}
   .chart-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
   .legend{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:160px}
   .legend-item{display:flex;align-items:center;gap:8px}
@@ -251,40 +252,7 @@
         </label>
         <button class="btn ghost sm" id="fl_clear">重置筛选</button>
       </div>
-      <div id="consCatManage" class="consCatManage">
-    <div class="ccRow"><span class="ccName">XM车费用</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="0">改名</button><button class="btn danger sm" data-d="0">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">XM消费</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="1">改名</button><button class="btn danger sm" data-d="1">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">个人零用</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="2">改名</button><button class="btn danger sm" data-d="2">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">不统计</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="3">改名</button><button class="btn danger sm" data-d="3">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">生活支出</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="4">改名</button><button class="btn danger sm" data-d="4">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">XM报销</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="5">改名</button><button class="btn danger sm" data-d="5">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">青甘环线支出</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="6">改名</button><button class="btn danger sm" data-d="6">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">人情社交</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="7">改名</button><button class="btn danger sm" data-d="7">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">南蓉</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="8">改名</button><button class="btn danger sm" data-d="8">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">买烟</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="9">改名</button><button class="btn danger sm" data-d="9">删除</button></span>
-    </div>
-    <div class="ccRow"><span class="ccName">给妈</span>
-      <span class="ccAct"><button class="btn ghost sm" data-i="10">改名</button><button class="btn danger sm" data-d="10">删除</button></span>
-    </div></div>
+      <div id="consCatManage" class="consCatManage" hidden=""></div>
       <div id="listWrap">
     <div class="muted" style="margin-bottom:10px">共 <b>267</b> 条 · <span style="color:var(--warn)">其中消费分类「其他 / 不统计」12 条不计入</span> · 收入 <b style="color:var(--income)">¥3,425.90</b> · 支出 <b style="color:var(--expense)">¥16,167.92</b> · 合计（支出−收入） <b style="color:var(--income)">¥12,742.02</b></div>
     <table>
@@ -4036,21 +4004,24 @@
 
   <!-- 看板 -->
   <section class="tabview" data-view="dash" hidden="">
+    <div class="dash-bar">
+      <button class="btn ghost sm" id="dashRefresh" title="明细页有改动时，点击重新生成看板数据">↻ 刷新看板</button>
+    </div>
     <div class="card">
-      <h2>本月概览</h2>
+      <h2>累计概览（全部）</h2>
       <div class="summary" id="dashSummary">
-    <div class="stat"><div class="k">2026-08 收入</div><div class="v income">¥3,425.90</div></div>
-    <div class="stat"><div class="k">2026-08 支出</div><div class="v expense">¥16,167.92</div></div>
-    <div class="stat"><div class="k">2026-08 结余</div><div class="v">¥-12,742.02</div></div>
-    <div class="stat"><div class="k">累计结余</div><div class="v">¥-12,742.02</div></div></div>
+    <div class="stat"><div class="k">累计收入</div><div class="v income">¥3,425.90</div></div>
+    <div class="stat"><div class="k">累计支出</div><div class="v expense">¥16,167.92</div></div>
+    <div class="stat"><div class="k">净结余</div><div class="v">¥-12,742.02</div></div>
+    <div class="stat"><div class="k">记录笔数</div><div class="v">255</div></div></div>
     </div>
     <div class="charts">
       <div class="card">
-        <h2>本月消费分类占比</h2>
+        <h2>消费分类占比（全部）</h2>
         <div id="pieChartConsCat"><div class="chart-row"><svg viewBox="0 0 210 210" width="210" height="210"><path d="M105,105 L200.00,105.00 A95,95 0 1 1 16.47,70.54 Z" fill="#06b6d4"><title>青甘环线支出: ¥9,039.03 (55.9%)</title></path><path d="M105,105 L16.47,70.54 A95,95 0 0 1 115.20,10.55 Z" fill="#f97316"><title>人情社交: ¥3,363.79 (20.8%)</title></path><path d="M105,105 L115.20,10.55 A95,95 0 0 1 151.97,22.42 Z" fill="#10b981"><title>XM消费: ¥1,053.83 (6.5%)</title></path><path d="M105,105 L151.97,22.42 A95,95 0 0 1 175.94,41.82 Z" fill="#8b5cf6"><title>生活支出: ¥839.00 (5.2%)</title></path><path d="M105,105 L175.94,41.82 A95,95 0 0 1 190.30,63.18 Z" fill="#ef4444"><title>个人零用: ¥699.26 (4.3%)</title></path><path d="M105,105 L190.30,63.18 A95,95 0 0 1 196.46,79.30 Z" fill="#3b82f6"><title>XM车费用: ¥468.13 (2.9%)</title></path><path d="M105,105 L196.46,79.30 A95,95 0 0 1 199.20,92.67 Z" fill="#ec4899"><title>XM报销: ¥369.88 (2.3%)</title></path><path d="M105,105 L199.20,92.67 A95,95 0 0 1 199.99,103.71 Z" fill="#84cc16"><title>给妈: ¥300.00 (1.9%)</title></path><path d="M105,105 L199.99,103.71 A95,95 0 0 1 200.00,105.00 Z" fill="#f59e0b"><title>南蓉: ¥35.00 (0.2%)</title></path><circle cx="105" cy="105" r="46" fill="#fff"></circle><text x="105" y="101" text-anchor="middle" font-size="12" fill="#6b7280">总支出</text><text x="105" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2430">¥16,167.92</text></svg><div class="legend"><div class="legend-item"><span class="dot" style="background:#06b6d4"></span>青甘环线支出 ¥9,039.03 <span class="muted">(55.9%)</span></div><div class="legend-item"><span class="dot" style="background:#f97316"></span>人情社交 ¥3,363.79 <span class="muted">(20.8%)</span></div><div class="legend-item"><span class="dot" style="background:#10b981"></span>XM消费 ¥1,053.83 <span class="muted">(6.5%)</span></div><div class="legend-item"><span class="dot" style="background:#8b5cf6"></span>生活支出 ¥839.00 <span class="muted">(5.2%)</span></div><div class="legend-item"><span class="dot" style="background:#ef4444"></span>个人零用 ¥699.26 <span class="muted">(4.3%)</span></div><div class="legend-item"><span class="dot" style="background:#3b82f6"></span>XM车费用 ¥468.13 <span class="muted">(2.9%)</span></div><div class="legend-item"><span class="dot" style="background:#ec4899"></span>XM报销 ¥369.88 <span class="muted">(2.3%)</span></div><div class="legend-item"><span class="dot" style="background:#84cc16"></span>给妈 ¥300.00 <span class="muted">(1.9%)</span></div><div class="legend-item"><span class="dot" style="background:#f59e0b"></span>南蓉 ¥35.00 <span class="muted">(0.2%)</span></div></div></div></div>
       </div>
       <div class="card">
-        <h2>预算对比（本月）</h2>
+        <h2>预算对比（全部）</h2>
         <div id="budgetAlert"><div class="bud-row">
       <div class="bud-head">
         <span class="name">XM停车费</span>
@@ -4260,7 +4231,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast">已改名：XM车费用</div>
+<div class="toast" id="toast">看板已刷新 ✓</div>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script>
@@ -4289,6 +4260,14 @@ let editId = null;
 let mapRows = null, mapMode = "append";
 
 function save(){ localStorage.setItem(LS_TX, JSON.stringify(state.transactions)); localStorage.setItem(LS_BUD, JSON.stringify(state.budgets)); localStorage.setItem(LS_CONS, JSON.stringify(state.consCats||[])); localStorage.setItem(LS_COLGAP, String(Number.isFinite(state.colGap)&&state.colGap>=0 ? state.colGap : DEFAULT_COLGAP)); persistEmbedded(); }
+// 从本地存储重新载入最新数据（解决「在别的标签页/窗口改了明细，看板内存 state 未同步」导致刷新看不到更新的问题）
+function reloadState(){
+  try{
+    state.transactions = load(LS_TX, []);
+    state.budgets = load(LS_BUD, {});
+    state.consCats = load(LS_CONS, []);
+  }catch(_){}
+}
 function addConsCat(name){
   name=(name||"").trim(); if(!name) return false;
   state.consCats = Array.isArray(state.consCats)?state.consCats:[];
@@ -4334,7 +4313,7 @@ $("tabs").addEventListener("click", e=>{
   const tab=b.dataset.tab;
   document.querySelectorAll(".tabview").forEach(s=>s.hidden = s.dataset.view!==tab);
   if(tab==="list") renderList();
-  if(tab==="dash") renderDash();
+  if(tab==="dash"){ reloadState(); renderDash(); }
   if(tab==="budget") renderBudget();
 });
 
@@ -4478,11 +4457,17 @@ function renameConsCat(oldName, newName){
     const idx=state.consCats.indexOf(oldName);
     if(idx>=0) state.consCats[idx]=newName;
   }
+  // 同步重命名预算 key，否则「预算对比」卡片仍显示旧名且金额归零
+  if(state.budgets && Object.prototype.hasOwnProperty.call(state.budgets, oldName)){
+    state.budgets[newName]=state.budgets[oldName];
+    delete state.budgets[oldName];
+  }
   save(); renderList();
 }
 function deleteConsCat(name){
   state.transactions.forEach(t=>{ if(t.consumptionCat===name) t.consumptionCat=""; });
   if(Array.isArray(state.consCats)) state.consCats=state.consCats.filter(c=>c!==name);
+  if(state.budgets) delete state.budgets[name];
   save(); renderList();
 }
 $("fl_consCatManage").addEventListener("click", ()=>{
@@ -4557,18 +4542,20 @@ function lastNMonths(n){
   return arr;
 }
 function renderDash(){
-  const m=thisMonth();
-  const cur=txInMonth(m).filter(t=>!isNoCount(t));   // 排除「不统计」消费分类
+  // 统计全部数据（不限本月），仅排除「不统计」消费分类；趋势图仍保留近 6 个月
+  const cur=state.transactions.filter(t=>!isNoCount(t));
   let inc=0, exp=0; cur.forEach(t=> t.type==="income"?inc+=t.amount:exp+=t.amount);
+  const net=inc-exp;
   $("dashSummary").innerHTML = `
-    <div class="stat"><div class="k">${m} 收入</div><div class="v income">¥${fmt(inc)}</div></div>
-    <div class="stat"><div class="k">${m} 支出</div><div class="v expense">¥${fmt(exp)}</div></div>
-    <div class="stat"><div class="k">${m} 结余</div><div class="v">¥${fmt(inc-exp)}</div></div>
-    <div class="stat"><div class="k">累计结余</div><div class="v">¥${fmt(totalNet())}</div></div>`;
+    <div class="stat"><div class="k">累计收入</div><div class="v income">¥${fmt(inc)}</div></div>
+    <div class="stat"><div class="k">累计支出</div><div class="v expense">¥${fmt(exp)}</div></div>
+    <div class="stat"><div class="k">净结余</div><div class="v">¥${fmt(net)}</div></div>
+    <div class="stat"><div class="k">记录笔数</div><div class="v">${cur.length}</div></div>`;
   renderTrend();
   renderPieByConsCat(cur);
   renderBudgetAlert(cur);
 }
+$("dashRefresh").addEventListener("click", ()=>{ reloadState(); renderDash(); toast("看板已刷新 ✓"); });
 function totalNet(){ let s=0; state.transactions.forEach(t=>{ if(isNoCount(t)) return; s+= t.type==="income"?t.amount:-t.amount; }); return s; }
 function renderTrend(){
   const months=lastNMonths(6);
